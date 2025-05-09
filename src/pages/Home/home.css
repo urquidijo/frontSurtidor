@@ -1,0 +1,197 @@
+/* Home.css */
+
+.home-wrapper {
+  padding: 2rem;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  min-height: 100vh;
+}
+
+.home-main {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-title {
+  font-size: 2rem;
+  text-align: center;
+  color: #00d1b2;
+  margin-bottom: 2rem;
+}
+
+.home-sucursal-info {
+  background-color: #101010;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 209, 178, 0.15);
+  margin-bottom: 2rem;
+}
+
+.home-sucursal-info h2 {
+  color: #00ffe5;
+  margin-bottom: 1rem;
+}
+
+.home-sucursal-info p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.home-loading,
+.home-empty {
+  text-align: center;
+  color: #aaa;
+  margin-top: 2rem;
+}
+
+.home-dispensadores {
+  margin-top: 3rem;
+}
+
+.home-dispensadores h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #00d1b2;
+  text-align: center;
+}
+
+.home-dispensadores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.home-dispensador-card {
+  background-color: #101010;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 209, 178, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-dispensador-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 18px rgba(0, 209, 178, 0.2);
+}
+
+.home-dispensador-card h3 {
+  margin-bottom: 0.8rem;
+  color: #00ffe5;
+}
+
+.home-dispensador-card p {
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+.home-dispensadores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.home-dispensador-card {
+  background-color: #222;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.home-dispensador-card h3 {
+  margin-bottom: 10px;
+}
+
+.home-dispensador-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.home-dispensador-card li {
+  margin-bottom: 6px;
+}
+/* Contenedor de acciones para dispensadores */
+.dispensador-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Botón base */
+.btn-dispensador {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+/* Botón de editar */
+.btn-dispensador.editar {
+  background-color: #00d1b2;
+  color: #1f1f1f;
+}
+
+.btn-dispensador.editar:hover {
+  background-color: #00a99d;
+}
+
+/* Botón de eliminar */
+.btn-dispensador.eliminar {
+  background-color: #ff3860;
+  color: #fff;
+}
+
+.btn-dispensador.eliminar:hover {
+  background-color: #e6274c;
+}
+
+/* Botón de añadir */
+.btn-dispensador.añadir {
+  background-color: #3273dc;
+  color: #fff;
+}
+
+.btn-dispensador.añadir:hover {
+  background-color: #275fad;
+}
+
+
+/* Botones de acciones de manguera en lista */
+.manguera-actions button {
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón editar manguera */
+.manguera-actions .editar,.btn-crear {
+  background-color: #00d1b2;
+  color: #1f1f1f;
+}
+
+.manguera-actions .editar,.btn-crear:hover {
+  background-color: #00a99d;
+}
+
+/* Botón eliminar manguera */
+.manguera-actions .eliminar {
+  background-color: #ff3860;
+  color: #fff;
+}
+
+.manguera-actions .eliminar:hover {
+  background-color: #e6274c;
+}
+
+
+

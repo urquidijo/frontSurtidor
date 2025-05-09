@@ -1,0 +1,8 @@
+:root {
+  font-family: Poppins, Arial, Helvetica, sans-serif;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}

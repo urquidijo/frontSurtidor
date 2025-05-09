@@ -1,0 +1,165 @@
+/* Asistencia.css */
+
+.asistencia-container {
+  background-color: #1a1a1a;
+  color: #f1f1f1;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 0 12px rgba(0, 255, 200, 0.15);
+}
+
+.asistencia-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #00d1b2;
+  font-size: 1.6rem;
+}
+.historial-asistencia {
+  margin-top: 2rem;
+}
+.planilla-container {
+  padding: 20px;
+  background-color: #111;
+  color: white;
+  border-radius: 12px;
+}
+
+.planilla-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.planilla-table th,
+.planilla-table td {
+  padding: 10px;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+.planilla-table th {
+  background-color: #222;
+  color: #0f0;
+}
+
+button {
+  background-color: #0f0;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0c0;
+}
+
+
+.historial-asistencia table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #222;
+  color: #eee;
+}
+
+.historial-asistencia th,
+.historial-asistencia td {
+  border: 1px solid #444;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.historial-asistencia th {
+  background-color: #333;
+}
+
+.historial-asistencia tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+.asistencia-info {
+  background-color: #2b2b2b;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 255, 200, 0.1);
+}
+
+.asistencia-info p {
+  margin: 0.8rem 0;
+  font-size: 1rem;
+}
+
+.asistencia-btn {
+  margin-top: 1.5rem;
+  background-color: #00d1b2;
+  color: #000;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.asistencia-btn:hover {
+  background-color: #00bfa4;
+}
+
+.asistencia-btn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  color: #ccc;
+}
+.botones-historial {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.btn-ver-todo,
+.btn-ver-todo-cerrar {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-ver-todo {
+  background-color: #2d6cdf;
+  color: white;
+}
+
+.btn-ver-todo:hover {
+  background-color: #1b4fb5;
+}
+
+.btn-ver-todo-cerrar {
+  background-color: #d9534f;
+  color: white;
+}
+
+.btn-ver-todo-cerrar:hover {
+  background-color: #c9302c;
+}
+/* NUEVO: Hacer la tabla responsive */
+.tabla-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.planilla-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #00d1b2;
+  font-size: 1.6rem;
+}
+
+

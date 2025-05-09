@@ -1,0 +1,116 @@
+/* Fondo oscuro translúcido para dispensador */
+.modal-categoria-dispensador-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  /* Contenedor del modal de dispensador */
+  .modal-categoria-dispensador {
+    background: #1e1e1e;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+    width: 100%;
+    max-width: 450px;
+    color: #f0f0f0;
+    animation: aparecer 0.3s ease-out;
+    position: relative;
+  }
+  
+  /* Animación de entrada */
+  @keyframes aparecer {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Título del modal */
+  .modal-categoria-dispensador h2 {
+    margin-top: 0;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #00d1b2;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Inputs y select */
+  .modal-categoria-dispensador-contenido input {
+    width: 90%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #2c2c2c;
+    color: #f0f0f0;
+    font-size: 1rem;
+  }
+  .modal-categoria-dispensador-contenido select{
+    width: 95%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #2c2c2c;
+    color: #f0f0f0;
+    font-size: 1rem;
+  }
+  
+  .modal-categoria-dispensador-contenido input::placeholder {
+    color: #aaa;
+  }
+  
+  /* Contenedor de botones */
+  .modal-categoria-dispensador-acciones {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  /* Botón de confirmar dispensador */
+  .btn-confirmar-dispensador {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: #00d1b2;
+    color: #1f1f1f;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-confirmar-dispensador:hover {
+    background-color: #00a99d;
+  }
+  
+  /* Botón de cancelar dispensador */
+  .btn-cancelar-dispensador {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: #333;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-cancelar-dispensador:hover {
+    background-color: #444;
+  }
+  
