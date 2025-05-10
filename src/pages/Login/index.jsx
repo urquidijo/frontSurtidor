@@ -166,7 +166,7 @@ const Login = () => {
   return (
     <div className="login-wrapper">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Bienvenidos</h2>
+        <h2 className="login-title">Bienvenidos a Octano</h2>
         <p className="login-subtitle">Por favor ingrese sus datos</p>
 
         <div className="input-group">
