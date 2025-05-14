@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./proveedores.css";
 import API_URL from "../../config/config";
 import ModalProveedor from "./ModalProveedor";
 import { showToast } from "../../utils/toastUtils";
@@ -90,60 +89,69 @@ const Proveedores = () => {
   };
 
   return (
-    <div className="proveedores-container">
-      <h2 className="proveedores-title">Gestión de Proveedores</h2>
-      <button className="crear-btn" onClick={() => setProveedorEditando({})}>
-        Crear Nuevo Proveedor
-      </button>
-      <div className="tabla-proveedores-wrapper">
-        <table className="tabla-proveedores">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Teléfono</th>
-              <th>Correo</th>
-              <th>Dirección</th>
-              <th>Nit</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {proveedores.map((p) => (
-              <tr key={p.id}>
-                <td>{p.nombre}</td>
-                <td>{p.telefono}</td>
-                <td>{p.correo}</td>
-                <td>{p.direccion}</td>
-                <td>{p.nit}</td>
-                <td>
-                  <button
-                    className="edit-btn"
-                    onClick={() => setProveedorEditando(p)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(p.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <div className="p-8 text-[#f1f1f1]">
+    <h2 className="text-[1.8rem] mb-6 text-[#00d1b2] font-bold">Gestión de Proveedores</h2>
 
-      {proveedorEditando && (
-        <ModalProveedor
-          proveedorSeleccionado={proveedorEditando}
-          onClose={handleCloseModal}
-          onSubmit={handleGuardarProveedor}
-        />
-      )}
+    <div className="flex justify-start mb-4">
+      <button
+        className="bg-[#00d1b2] text-black px-5 py-2 rounded-lg font-bold hover:bg-[#00bfa4] transition"
+        onClick={() => setProveedorEditando({})}
+      >
+        + Crear proveedor
+      </button>
     </div>
-  );
+
+    <div className="overflow-x-auto rounded-xl shadow-md bg-[#2a2a2a]">
+      <table className="w-full min-w-[800px] border-collapse">
+        <thead className="bg-[#1c1c1c]">
+          <tr>
+            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Nombre</th>
+            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Teléfono</th>
+            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Correo</th>
+            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Dirección</th>
+            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">NIT</th>
+            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {proveedores.map((p) => (
+            <tr key={p.id} className="hover:bg-[#1f1f1f] transition">
+              <td className="px-4 py-3 border-b border-[#444]">{p.nombre}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{p.telefono}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{p.correo}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{p.direccion}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{p.nit}</td>
+              <td className="px-4 py-3 border-b border-[#444]">
+                <button
+                  className="bg-[#00d1b2] text-black px-3 py-1 rounded-md mr-2 text-sm hover:bg-[#00bfa4] transition"
+                  onClick={() => setProveedorEditando(p)}
+                >
+                  Editar
+                </button>
+                <button
+                  className="bg-[#ff5c5c] text-white px-3 py-1 rounded-md text-sm hover:bg-[#e04848] transition"
+                  onClick={() => handleDelete(p.id)}
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    {proveedorEditando && (
+      <ModalProveedor
+        proveedorSeleccionado={proveedorEditando}
+        onClose={handleCloseModal}
+        onSubmit={handleGuardarProveedor}
+      />
+    )}
+  </div>
+);
+
+
 };
 
 export default Proveedores;

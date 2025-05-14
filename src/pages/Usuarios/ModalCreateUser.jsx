@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./modalCreateUser.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
@@ -111,111 +110,144 @@ const ModalCreateUser = ({ onClose, onUserCreated }) => {
   };
 
   return (
-    <div className="modal-register-backdrop">
-      <form className="modal-register-content" onSubmit={handleSubmit}>
-        <h2 className="title">Crear Usuario</h2>
-        {[
-          {
-            icon: faAddressCard,
-            name: "ci",
-            placeholder: "Cédula de Identidad",
-            type: "number",
-          },
-          { icon: faUser, name: "name", placeholder: "Nombre" },
-          {
-            icon: faPhone,
-            name: "telefono",
-            placeholder: "Teléfono",
-            type: "number",
-          },
-          {
-            icon: faEnvelope,
-            name: "email",
-            placeholder: "Correo electrónico",
-            type: "email",
-          },
-          { icon: faHouse, name: "domicilio", placeholder: "Domicilio" },
-        ].map(({ icon, name, placeholder, type}) => (
-          <div key={name} className="modal-Inputclass">
-            <FontAwesomeIcon icon={icon} className="icon" />
-            <input
-              type={type}
-              name={name}
-              placeholder={placeholder}
-              onWheel={(e) => e.target.blur()}
-              autoComplete="off"
-              value={objData[name]}
-              onChange={handleChange}
-            />
-            {errors[name] && <span className="error">{errors[name]}</span>}
-          </div>
-        ))}
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-[#1e1e1e] text-white p-6 rounded-2xl w-full max-w-lg shadow-xl"
+    >
+      <h2 className="text-2xl font-bold text-teal-400 mb-6">Crear Usuario</h2>
 
-        <div className="modal-Inputclass">
-          <FontAwesomeIcon icon={faPerson} className="icon" />
-          <select name="sexo" value={objData.sexo} onChange={handleChange}>
-            <option value="">Selecciona tu sexo</option>
-            <option value="M">Masculino</option>
-            <option value="F">Femenino</option>
-          </select>
-        </div>
-
-        <div className="modal-Inputclass">
-          <FontAwesomeIcon icon={faLock} className="icon" />
+      {[
+        {
+          icon: faAddressCard,
+          name: "ci",
+          placeholder: "Cédula de Identidad",
+          type: "number",
+        },
+        { icon: faUser, name: "name", placeholder: "Nombre" },
+        {
+          icon: faPhone,
+          name: "telefono",
+          placeholder: "Teléfono",
+          type: "number",
+        },
+        {
+          icon: faEnvelope,
+          name: "email",
+          placeholder: "Correo electrónico",
+          type: "email",
+        },
+        { icon: faHouse, name: "domicilio", placeholder: "Domicilio" },
+      ].map(({ icon, name, placeholder, type }) => (
+        <div
+          key={name}
+          className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-2"
+        >
+          <FontAwesomeIcon icon={icon} className="text-teal-400 mr-3" />
           <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Contraseña"
-            value={objData.password}
+            type={type}
+            name={name}
+            placeholder={placeholder}
+            onWheel={(e) => e.target.blur()}
+            autoComplete="off"
+            value={objData[name]}
             onChange={handleChange}
+            className="w-full bg-transparent outline-none text-white placeholder-gray-400"
           />
-          <FontAwesomeIcon
-            icon={showPassword ? faEyeSlash : faEye}
-            className="eye-icon"
-            onClick={() => setShowPassword(!showPassword)}
-          />
-          {errors.password && <span className="error">{errors.password}</span>}
+          {errors[name] && (
+            <span className="text-red-500 text-sm ml-2">{errors[name]}</span>
+          )}
         </div>
+      ))}
 
-        <div className="modal-Inputclass">
-          <FontAwesomeIcon icon={faShop} className="icon" />
-          <select
-            name="id_sucursal"
-            value={objData.id_sucursal}
-            onChange={handleChange}
-          >
-            <option value="">Selecciona una sucursal</option>
-            {sucursales.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-1">
+        <FontAwesomeIcon icon={faPerson} className="text-teal-400 mr-3" />
+        <select
+          name="sexo"
+          value={objData.sexo}
+          onChange={handleChange}
+          className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
+        >
+          <option value="">Selecciona tu sexo</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+        </select>
+      </div>
 
-        <div className="modal-Inputclass">
-          <FontAwesomeIcon icon={faUser} className="icon" />
-          <select name="id_rol" value={objData.id_rol} onChange={handleChange}>
-            <option value="">Selecciona un rol</option>
-            {roles.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-2 relative">
+        <FontAwesomeIcon icon={faLock} className="text-teal-400 mr-3" />
+        <input
+          type={showPassword ? "text" : "password"}
+          name="password"
+          placeholder="Contraseña"
+          value={objData.password}
+          onChange={handleChange}
+          className="w-full bg-transparent outline-none text-white placeholder-gray-400"
+        />
+        <FontAwesomeIcon
+          icon={showPassword ? faEyeSlash : faEye}
+          className="absolute right-3 cursor-pointer text-gray-400 hover:text-white"
+          onClick={() => setShowPassword(!showPassword)}
+        />
+        {errors.password && (
+          <span className="text-red-500 text-sm ml-2">{errors.password}</span>
+        )}
+      </div>
 
-        <div className="button-group-createUser">
-          <button type="submit" disabled={isDisabled} id="buttonLogIn">
-            Crear
-          </button>
-          <button type="button" className="cancel-btn" onClick={onClose}>
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-1">
+        <FontAwesomeIcon icon={faShop} className="text-teal-400 mr-3" />
+        <select
+          name="id_sucursal"
+          value={objData.id_sucursal}
+          onChange={handleChange}
+          className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
+        >
+          <option value="">Selecciona una sucursal</option>
+          {sucursales.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-6 px-3 py-1">
+        <FontAwesomeIcon icon={faUser} className="text-teal-400 mr-3" />
+        <select
+          name="id_rol"
+          value={objData.id_rol}
+          onChange={handleChange}
+          className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
+        >
+          <option value="">Selecciona un rol</option>
+          {roles.map((r) => (
+            <option key={r.id} value={r.id}>
+              {r.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex justify-end gap-4">
+        <button
+          type="submit"
+          disabled={isDisabled}
+          className="bg-teal-500 hover:bg-teal-600 text-black font-semibold py-2 px-4 rounded-md transition disabled:opacity-50"
+        >
+          Crear
+        </button>
+        <button
+          type="button"
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition"
+          onClick={onClose}
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+);
+
 };
 
 export default ModalCreateUser;

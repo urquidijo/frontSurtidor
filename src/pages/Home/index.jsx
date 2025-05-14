@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ModalDispensador from "./ModalDispensador";
 import ModalManguera from "./ModalManguera.jsx";
-import "./home.css";
 import API_URL from "../../config/config";
 import {
   mostrarConfirmacion,
@@ -77,7 +75,7 @@ const Home = () => {
       setDispensadores(dispensadoresConMangueras);
     } catch (error) {
       console.error("Error al cargar dispensadores:", error);
-      showToast("warning","error al obtener los dispensasdores")
+      showToast("warning", "error al obtener los dispensasdores");
     }
   };
   // FUNCIONES DISPENSADOR
@@ -237,125 +235,130 @@ const Home = () => {
   };
 
   return (
-    <div className="home-wrapper">
-      <main className="home-main">
-        <h1 className="home-title">Bienvenido a la Sucursal</h1>
+  <div className=" p-8 bg-[#121212] min-h-screen text-[#f0f0f0] font-sans tracking-wide">
+    <main className="max-w-7xl mx-auto">
+      <h1 className="text-4xl font-extrabold text-[#00d1b2] mb-8 drop-shadow-md">
+        Bienvenido a la Sucursal
+      </h1>
 
-        {sucursal ? (
-          <div className="home-sucursal-info">
-            <h2>{sucursal.nombre}</h2>
+      {sucursal ? (
+        <div className="bg-[#1f1f1f] rounded-xl p-6 shadow-lg mb-10 border border-[#2a2a2a]">
+          <h2 className="text-2xl font-bold text-[#00d1b2] mb-3">
+            {sucursal.nombre}
+          </h2>
+          <div className="space-y-2 text-sm text-[#ddd]">
             <p>
-              <strong>Dirección:</strong> {sucursal.direccion}
+              <span className="font-semibold text-[#ccc]">Dirección:</span> {sucursal.direccion}
             </p>
             <p>
-              <strong>Teléfono:</strong> {sucursal.telefono || "No registrado"}
+              <span className="font-semibold text-[#ccc]">Teléfono:</span> {sucursal.telefono || "No registrado"}
             </p>
             <p>
-              <strong>Correo:</strong> {sucursal.correo}
+              <span className="font-semibold text-[#ccc]">Correo:</span> {sucursal.correo}
             </p>
             <p>
-              <strong>Estado:</strong>{" "}
-              <span
-                style={{ color: sucursal.esta_suspendido ? "red" : "green" }}
-              >
+              <span className="font-semibold text-[#ccc]">Estado:</span>{" "}
+              <span className={`font-bold ${sucursal.esta_suspendido ? "text-red-500" : "text-green-500"}`}>
                 {sucursal.esta_suspendido ? "Suspendida" : "Activa"}
               </span>
             </p>
           </div>
-        ) : (
-          <p className="home-loading">Cargando datos de la sucursal...</p>
-        )}
+        </div>
+      ) : (
+        <p className="text-gray-400">Cargando datos de la sucursal...</p>
+      )}
 
-        {permisos.includes("ver_dashboard") && (
-          <section className="home-dispensadores">
-            <h2>Dispensadores de Combustible</h2>
-            <button className="btn-crear" onClick={handleAbrirModalCrear}>
+      {permisos.includes("ver_dashboard") && (
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-semibold text-[#00d1b2]">Dispensadores de Combustible</h2>
+            <button
+              className="bg-[#00d1b2] text-white px-5 py-2 rounded-lg hover:bg-[#00a89c] transition-all duration-200 shadow-md"
+              onClick={handleAbrirModalCrear}
+            >
               ➕ Nuevo Dispensador
             </button>
+          </div>
 
-            {dispensadores.length > 0 ? (
-              <div className="home-dispensadores-grid">
-                {dispensadores.map((disp, idx) => (
-                  <div key={idx} className="home-dispensador-card">
-                    <h3>Ubicación: {disp.ubicacion}</h3>
-                    <p>
-                      <strong>Estado:</strong> {disp.estado}
-                    </p>
-                    <p>
-                      <strong>Capacidad máxima:</strong> {disp.capacidad_maxima}{" "}
-                      m^3
-                    </p>
-                    <div className="dispensador-actions">
-                      <button
-                        onClick={() => handleEditarDispensador(disp)}
-                        className="btn-dispensador editar"
-                      >
-                        Editar Dispensador
-                      </button>
-                      <button
-                        onClick={() => handleEliminarDispensador(disp.id)}
-                        className="btn-dispensador eliminar"
-                      >
-                        Eliminar Dispensador
-                      </button>
-                      <button
-                        onClick={() => {
-                          setModoModalManguera("crear");
-                          setNuevaManguera({
-                            esta_activo: true,
-                            id_dispensador: disp.id,
-                          });
-                          setOpenModalManguera(true);
-                        }}
-                        className="btn-dispensador añadir"
-                      >
-                        Añadir Manguera
-                      </button>
-                    </div>
-                    <h4>Mangueras:</h4>
-                    {disp.mangueras.length > 0 ? (
-                      <ul>
-                        {disp.mangueras.map((manguera) => (
-                          <li key={manguera.id}>
-                            <div className="manguera-info">
-                              {manguera.esta_activo ? "✅" : "❌"} Manguera{" "}
-                              {manguera.id.slice(0, 8)}
-                            </div>
-                            <span className="manguera-actions">
-                              <button
-                                onClick={() => handleEditarManguera(manguera)}
-                                className="editar"
-                              >
-                                Editar
-                              </button>
-                              <button
-                                onClick={() =>
-                                  handleEliminarManguera(manguera.id)
-                                }
-                                className="eliminar"
-                              >
-                                Eliminar
-                              </button>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>Sin mangueras registradas.</p>
-                    )}
+          {dispensadores.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {dispensadores.map((disp, idx) => (
+                <div key={idx} className="bg-[#1f1f1f] rounded-xl shadow-lg p-5 border border-[#2a2a2a]">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    Ubicación: <span className="text-[#ccc]">{disp.ubicacion}</span>
+                  </h3>
+                  <p><span className="font-semibold text-[#ccc]">Estado:</span> {disp.estado}</p>
+                  <p><span className="font-semibold text-[#ccc]">Capacidad máxima:</span> {disp.capacidad_maxima} m³</p>
+
+                  <div className="mt-4 space-y-2">
+                    <button
+                      onClick={() => handleEditarDispensador(disp)}
+                      className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all duration-200"
+                    >
+                      ✏️ Editar Dispensador
+                    </button>
+                    <button
+                      onClick={() => handleEliminarDispensador(disp.id)}
+                      className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-all duration-200"
+                    >
+                      🗑️ Eliminar Dispensador
+                    </button>
+                    <button
+                      onClick={() => {
+                        setModoModalManguera("crear");
+                        setNuevaManguera({ esta_activo: true, id_dispensador: disp.id });
+                        setOpenModalManguera(true);
+                      }}
+                      className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200"
+                    >
+                      ➕ Añadir Manguera
+                    </button>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="home-empty">
-                No se encontraron dispensadores para esta sucursal.
-              </p>
-            )}
-          </section>
-        )}
-      </main>
 
-      <ModalDispensador
+                  <h4 className="mt-4 font-semibold text-[#ccc]">Mangueras:</h4>
+                  {disp.mangueras.length > 0 ? (
+                    <ul className="space-y-1 mt-2">
+                      {disp.mangueras.map((manguera) => (
+                        <li
+                          key={manguera.id}
+                          className="flex items-center justify-between bg-[#2a2a2a] p-2 rounded-lg"
+                        >
+                          <span>
+                            {manguera.esta_activo ? "✅" : "❌"} Manguera {manguera.id.slice(0, 8)}
+                          </span>
+                          <div className="flex space-x-3 text-sm">
+                            <button
+                              onClick={() => handleEditarManguera(manguera)}
+                              className="text-blue-400 hover:underline"
+                            >
+                              Editar
+                            </button>
+                            <button
+                              onClick={() => handleEliminarManguera(manguera.id)}
+                              className="text-red-400 hover:underline"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-400 mt-2 text-sm">Sin mangueras registradas.</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400 mt-4 text-sm">
+              No se encontraron dispensadores para esta sucursal.
+            </p>
+          )}
+        </section>
+      )}
+    </main>
+
+    <ModalDispensador
         open={openModal}
         onClose={() => setOpenModal(false)}
         modo={modoModal}
@@ -376,8 +379,8 @@ const Home = () => {
         onCrear={handleCrearManguera}
         onActualizar={handleActualizarManguera}
       />
-    </div>
-  );
+  </div>
+);
 };
 
 export default Home;

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import API_URL from "../../config/config";
-import { Pencil, Save, X } from "lucide-react"; 
+import { Pencil, Save, X } from "lucide-react";
 import { showToast } from "../../utils/toastUtils";
-import "./perfil.css";
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -26,9 +25,13 @@ const Perfil = () => {
   useEffect(() => {
     if (usuario) {
       const isValid = Object.values(errors).every((error) => !error);
-      const allFieldsFilled = ["nombre", "correo", "telefono", "sexo", "domicilio"].every(
-        (field) => usuario[field]?.trim() !== ""
-      );
+      const allFieldsFilled = [
+        "nombre",
+        "correo",
+        "telefono",
+        "sexo",
+        "domicilio",
+      ].every((field) => usuario[field]?.trim() !== "");
       setIsDisabled(!isValid || !allFieldsFilled);
     }
   }, [errors, usuario]);
@@ -79,7 +82,6 @@ const Perfil = () => {
     } catch (error) {
       console.error(error);
       showToast("error", "Error del servidor");
-      
     }
   };
 
@@ -92,98 +94,80 @@ const Perfil = () => {
   if (!usuario) return <p>Cargando perfil...</p>;
 
   return (
-    <div className="perfil-container">
-      <h2>Mi Perfil</h2>
+  <div className="p-8 text-[#f1f1f1]">
+    <h2 className="text-2xl mb-6 text-[#00d1b2] font-bold border-b border-[#444] pb-2">Mi Perfil</h2>
 
-      <div className="perfil-form">
-        {/* Campos con validaciones */}
-        <label>
-          Nombre:
-          <input
-            type="text"
-            name="nombre"
-            autoComplete="off"
-            value={usuario.nombre}
-            onChange={handleChange}
-            disabled
-          />
-          {errors.nombre && <span className="error">{errors.nombre}</span>}
+    <div className="grid gap-5 bg-[#2a2a2a] p-6 rounded-xl shadow-lg max-w-2xl">
+      {[
+        { label: "Nombre", name: "nombre", type: "text", disabled: true },
+        { label: "Correo", name: "correo", type: "email", disabled: !editando },
+        { label: "Teléfono", name: "telefono", type: "number", disabled: !editando },
+        { label: "Sexo", name: "sexo", type: "select", disabled: !editando },
+        { label: "Domicilio", name: "domicilio", type: "text", disabled: !editando },
+        { label: "CI", name: "ci", type: "text", disabled: true }
+      ].map((field) => (
+        <label key={field.name} className="flex flex-col gap-1 text-sm">
+          <span className="text-[#00d1b2] font-medium">{field.label}:</span>
+          {field.type === "select" ? (
+            <select
+              name={field.name}
+              value={usuario[field.name]}
+              onChange={handleChange}
+              disabled={field.disabled}
+              className="bg-[#1f1f1f] text-white px-4 py-2 rounded-md border border-[#444] disabled:opacity-60"
+            >
+              <option value="">Selecciona tu sexo</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+            </select>
+          ) : (
+            <input
+              type={field.type}
+              name={field.name}
+              autoComplete="off"
+              value={usuario[field.name]}
+              onChange={handleChange}
+              onWheel={(e) => e.target.blur()}
+              disabled={field.disabled}
+              className="bg-[#1f1f1f] text-white px-4 py-2 rounded-md border border-[#444] disabled:opacity-60"
+            />
+          )}
+          {errors[field.name] && (
+            <span className="text-red-500 text-xs">{errors[field.name]}</span>
+          )}
         </label>
-        {/* resto de los campos igual... */}
-        <label>
-          Correo:
-          <input
-            type="email"
-            name="correo"
-            autoComplete="off"
-            value={usuario.correo}
-            onChange={handleChange}
-            disabled={!editando}
-          />
-          {errors.correo && <span className="error">{errors.correo}</span>}
-        </label>
-        <label>
-          Teléfono:
-          <input
-            type="number"
-            name="telefono"
-            autoComplete="off"
-            onWheel={(e) => e.target.blur()}
-            value={usuario.telefono}
-            onChange={handleChange}
-            disabled={!editando}
-          />
-          {errors.telefono && <span className="error">{errors.telefono}</span>}
-        </label>
-        <label>
-          Sexo:
-          <select
-            name="sexo"
-            value={usuario.sexo}
-            onChange={handleChange}
-            disabled={!editando}
-          >
-            <option value="">Selecciona tu sexo</option>
-            <option value="M">Masculino</option>
-            <option value="F">Femenino</option>
-          </select>
-        </label>
-        <label>
-          Domicilio:
-          <input
-            type="text"
-            name="domicilio"
-            autoComplete="off"
-            value={usuario.domicilio}
-            onChange={handleChange}
-            disabled={!editando}
-          />
-          {errors.domicilio && <span className="error">{errors.domicilio}</span>}
-        </label>
-        <label>
-          CI:
-          <input type="text" value={usuario.ci} disabled />
-        </label>
-      </div>
-
-      <div className="perfil-actions">
-        {editando ? (
-          <>
-            <button onClick={handleGuardar} disabled={isDisabled}>
-              <Save size={14} /> Guardar
-            </button>
-            <button onClick={handleCancelar}>
-              <X size={14} /> Cancelar
-            </button>
-          </>
-        ) : (
-          <button onClick={() => setEditando(true)}>
-            <Pencil size={16} /> Editar Perfil
-          </button>
-        )}
-      </div>
+      ))}
     </div>
-  );
+
+    <div className="flex gap-4 mt-6">
+      {editando ? (
+        <>
+          <button
+            onClick={handleGuardar}
+            disabled={isDisabled}
+            className="flex items-center gap-2 bg-[#00d1b2] text-black px-5 py-2 rounded-md font-semibold hover:bg-[#00bfa4] disabled:opacity-50 transition"
+          >
+            <Save size={16} /> Guardar
+          </button>
+          <button
+            onClick={handleCancelar}
+            className="flex items-center gap-2 bg-gray-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-gray-500 transition"
+          >
+            <X size={16} /> Cancelar
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={() => setEditando(true)}
+          className="flex items-center gap-2 bg-[#00d1b2] text-black px-5 py-2 rounded-md font-semibold hover:bg-[#00bfa4] transition"
+        >
+          <Pencil size={16} /> Editar Perfil
+        </button>
+      )}
+    </div>
+  </div>
+);
+
 };
 
 export default Perfil;

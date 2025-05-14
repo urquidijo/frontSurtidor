@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API_URL from "../../config/config";
-import "./changePassword.css";
 
 const ChangePassword = () => {
   const { token } = useParams();

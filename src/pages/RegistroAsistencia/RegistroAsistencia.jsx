@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import API_URL from "../../config/config";
-import "./registroAsistencia.css";
 import { showToast } from "../../utils/toastUtils";
 
 
@@ -126,62 +125,80 @@ const RegistroAsistencia = () => {
   };
 
   return (
-    <div className="planilla-container">
-      <h2 className="planilla-title">Planilla de Asistencia</h2>
+  <div className="p-8 text-[#f1f1f1]">
+    <h2 className="text-[1.8rem] mb-6 text-[#00d1b2] font-bold">
+      Planilla de Asistencia
+    </h2>
 
-      {permisos.includes("gestionar_historial_asistencias") && (
-        <div className="botones-historial">
-          <button onClick={obtenerTodoElHistorial} className="btn-ver-todo">
-            Mostrar todo el historial
-          </button>
-          <button onClick={obtenerAsistencias} className="btn-ver-todo-cerrar">
-            Cerrar todo el historial
-          </button>
-        </div>
-      )}
-
-      <div className="tabla-responsive">
-        <table className="planilla-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Fecha</th>
-              <th>Hora Entrada</th>
-              <th>Hora Salida</th>
-              <th>Tiempo Trabajado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {asistencias.map((asistencia, index) => (
-              <tr key={index}>
-                <td>{asistencia.nombre}</td>
-                <td>{asistencia.correo}</td>
-                <td>{formatearFecha(asistencia.fecha)}</td>
-                <td>{formatearHora(asistencia.hora_entrada) || "-"}</td>
-                <td>{formatearHora(asistencia.hora_salida) || "-"}</td>
-                <td>
-                  {calcularTiempo(
-                    asistencia.hora_entrada,
-                    asistencia.hora_salida
-                  ) || "-"}
-                </td>
-                <td>
-                  {!asistencia.hora_entrada && asistencia.pendiente && (
-                    <button onClick={marcarEntrada}>Marcar llegada</button>
-                  )}
-                  {asistencia.hora_entrada && !asistencia.hora_salida && (
-                    <button onClick={marcarSalida}>Marcar salida</button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    {permisos.includes("gestionar_historial_asistencias") && (
+      <div className="flex gap-4 mb-4">
+        <button
+          onClick={obtenerTodoElHistorial}
+          className="bg-[#00d1b2] text-black px-5 py-2 rounded-lg font-bold hover:bg-[#00bfa4] transition"
+        >
+          Mostrar todo el historial
+        </button>
+        <button
+          onClick={obtenerAsistencias}
+          className="bg-[#ff5c5c] text-white px-5 py-2 rounded-lg font-bold hover:bg-[#e04848] transition"
+        >
+          Cerrar todo el historial
+        </button>
       </div>
+    )}
+
+    <div className="overflow-x-auto rounded-xl shadow-md bg-[#2a2a2a]">
+      <table className="w-full min-w-[900px] border-collapse">
+        <thead className="bg-[#1c1c1c]">
+          <tr>
+            {["Nombre", "Correo", "Fecha", "Hora Entrada", "Hora Salida", "Tiempo Trabajado", "Acción"].map((t, i) => (
+              <th
+                key={i}
+                className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]"
+              >
+                {t}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {asistencias.map((asistencia, index) => (
+            <tr key={index} className="hover:bg-[#1f1f1f] transition">
+              <td className="px-4 py-3 border-b border-[#444]">{asistencia.nombre}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{asistencia.correo}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{formatearFecha(asistencia.fecha)}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{formatearHora(asistencia.hora_entrada) || "-"}</td>
+              <td className="px-4 py-3 border-b border-[#444]">{formatearHora(asistencia.hora_salida) || "-"}</td>
+              <td className="px-4 py-3 border-b border-[#444]">
+                {calcularTiempo(asistencia.hora_entrada, asistencia.hora_salida) || "-"}
+              </td>
+              <td className="px-4 py-3 border-b border-[#444]">
+                {!asistencia.hora_entrada && asistencia.pendiente && (
+                  <button
+                    onClick={marcarEntrada}
+                    className="bg-[#00d1b2] text-black px-3 py-1 rounded-md text-sm hover:bg-[#00bfa4] transition"
+                  >
+                    Marcar llegada
+                  </button>
+                )}
+                {asistencia.hora_entrada && !asistencia.hora_salida && (
+                  <button
+                    onClick={marcarSalida}
+                    className="bg-[#facc15] text-black px-3 py-1 rounded-md text-sm hover:bg-[#eab308] transition"
+                  >
+                    Marcar salida
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  );
+  </div>
+);
+
+
 };
 
 export default RegistroAsistencia;

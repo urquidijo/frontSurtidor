@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import API_URL from "../../config/config";
-import "./inventario.css";
 import ModalProducto from "./ModalProducto.jsx";
 import ModalCategoria from "./ModalCategoria.jsx";
 import { showToast } from "../../utils/toastUtils";
@@ -216,106 +215,110 @@ const Inventario = () => {
   };
 
   return (
-    <div className="inventario-container">
-      <h2>Inventario por Categoría</h2>
+  <div className="bg-[#1f1f1f] min-h-screen p-6 text-[#f0f0f0]">
+    <h2 className="text-3xl font-semibold text-center text-[#00d1b2] mb-8">
+      Inventario de Productos
+    </h2>
 
-      <div className="acciones-inventario">
-        <button
-          onClick={() => {
-            setModoCategoria("crear");
-            setModalCategoriaAbierto(true);
-          }}
-          className="btn-nueva-categoria"
-        >
-          Nueva Categoría
-        </button>
-        <button
-          onClick={() => {
-            setModoCategoria("eliminar");
-            setModalCategoriaAbierto(true);
-          }}
-          className="btn-eliminar-categoria"
-        >
-          Eliminar Categoría
-        </button>
-      </div>
-
-      {categorias.map((cat) => (
-        <div key={cat.id} className="categoria-bloque">
-          <div className="categoria-header">
-            <h3>{cat.nombre}</h3>
-            <button
-              className="btn-agregar-producto"
-              onClick={() => abrirModalNuevoProducto(cat.id)}
-            >
-              + Añadir producto
-            </button>
-          </div>
-          <p>{cat.descripcion}</p>
-
-          <div className="productos-grid">
-            {productosPorCategoria[cat.id]?.map((prod) => (
-              <div key={prod.id} className="producto-card">
-                <img
-                  src={
-                    prod.url_image
-                      ? `${API_URL}/uploads/${prod.url_image}`
-                      : "/default-product.png"
-                  }
-                  alt={prod.nombre}
-                />
-                <h4>{prod.nombre}</h4>
-                <p>Stock: {prod.stock}</p>
-                <p>Unidad: {prod.unidad_medida}</p>
-                <p>Precio venta: Bs. {prod.precio_venta}</p>
-                <div className="acciones-producto">
-                  <button
-                    className="btn-editar-producto"
-                    onClick={() => abrirModalEditarProducto(prod, cat.id)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn-eliminar-producto"
-                    onClick={() => handleEliminarProducto(prod.id)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-
-      {/* Modal para crear o editar productos */}
-      <ModalProducto
-        open={modalAbierto}
-        onClose={() => setModalAbierto(false)}
-        onSubmit={handleGuardarProducto}
-        producto={productoSeleccionado}
-        proveedores={proveedores}
-        ofertas={ofertas}
-        categoriaId={categoriaParaProducto}
-        sucursalId={sucursalId}
-        modo={modoProducto}
-      />
-
-      {/* Modal para crear o eliminar categorías */}
-      <ModalCategoria
-        open={modalCategoriaAbierto}
-        onClose={() => setModalCategoriaAbierto(false)}
-        modo={modoCategoria}
-        nuevaCategoria={nuevaCategoria}
-        setNuevaCategoria={setNuevaCategoria}
-        categorias={categorias}
-        categoriaSeleccionada={categoriaSeleccionada}
-        setCategoriaSeleccionada={setCategoriaSeleccionada}
-        onCrear={handleCrearCategoria}
-        onEliminar={handleEliminarCategoria}
-      />
+    <div className="flex justify-center gap-6 mb-10">
+      <button
+        onClick={() => {
+          setModoCategoria("crear");
+          setModalCategoriaAbierto(true);
+        }}
+        className="bg-[#00bcd4] hover:bg-[#0097a7] text-white font-semibold px-5 py-2 rounded-lg transition"
+      >
+        Nueva Categoría
+      </button>
+      <button
+        onClick={() => {
+          setModoCategoria("eliminar");
+          setModalCategoriaAbierto(true);
+        }}
+        className="bg-[#444] hover:bg-[#666] text-white font-semibold px-5 py-2 rounded-lg transition"
+      >
+        Eliminar Categoría
+      </button>
     </div>
-  );
+
+    {categorias.map((cat) => (
+      <div key={cat.id} className="mb-10 bg-[#2a2a2a] rounded-xl p-6 shadow-md border border-[#444]">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-2xl text-[#00d1b2] font-bold">{cat.nombre}</h3>
+          <button
+            className="bg-[#00bcd4] hover:bg-[#0097a7] text-white px-4 py-2 rounded-lg transition font-semibold"
+            onClick={() => abrirModalNuevoProducto(cat.id)}
+          >
+            + Añadir producto
+          </button>
+        </div>
+        <p className="text-[#ccc] mb-4">{cat.descripcion}</p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {productosPorCategoria[cat.id]?.map((prod) => (
+            <div key={prod.id} className="bg-[#1f1f1f] border border-[#444] rounded-xl p-4 text-center shadow-lg">
+              <img
+                src={
+                  prod.url_image
+                    ? `${API_URL}/uploads/${prod.url_image}`
+                    : "/default-product.png"
+                }
+                alt={prod.nombre}
+                className="w-full h-40 object-contain rounded-lg mb-3 bg-[#333]"
+              />
+              <h4 className="text-lg font-bold text-[#00d1b2]">{prod.nombre}</h4>
+              <p className="text-sm text-[#ccc]">Stock: {prod.stock}</p>
+              <p className="text-sm text-[#ccc]">Unidad: {prod.unidad_medida}</p>
+              <p className="text-sm text-[#ccc]">Precio venta: Bs. {prod.precio_venta}</p>
+
+              <div className="flex justify-center gap-3 mt-4">
+                <button
+                  className="bg-[#00bcd4] hover:bg-[#0097a7] text-white px-3 py-1 rounded-md text-sm font-semibold"
+                  onClick={() => abrirModalEditarProducto(prod, cat.id)}
+                >
+                  Editar
+                </button>
+                <button
+                  className="bg-[#dc3545] hover:bg-[#c82333] text-white px-3 py-1 rounded-md text-sm font-semibold"
+                  onClick={() => handleEliminarProducto(prod.id)}
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+
+    {/* Modal para productos */}
+    <ModalProducto
+      open={modalAbierto}
+      onClose={() => setModalAbierto(false)}
+      onSubmit={handleGuardarProducto}
+      producto={productoSeleccionado}
+      proveedores={proveedores}
+      ofertas={ofertas}
+      categoriaId={categoriaParaProducto}
+      sucursalId={sucursalId}
+      modo={modoProducto}
+    />
+
+    {/* Modal para categorías */}
+    <ModalCategoria
+      open={modalCategoriaAbierto}
+      onClose={() => setModalCategoriaAbierto(false)}
+      modo={modoCategoria}
+      nuevaCategoria={nuevaCategoria}
+      setNuevaCategoria={setNuevaCategoria}
+      categorias={categorias}
+      categoriaSeleccionada={categoriaSeleccionada}
+      setCategoriaSeleccionada={setCategoriaSeleccionada}
+      onCrear={handleCrearCategoria}
+      onEliminar={handleEliminarCategoria}
+    />
+  </div>
+);
 };
 
 export default Inventario;

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import "./ModalProducto.css";
 
 const ModalProducto = ({
   open,
@@ -165,94 +164,134 @@ const ModalProducto = ({
   if (!open) return null;
 
   return (
-    <div className="modal-producto-backdrop">
-      <div className="modal-producto-contenido">
-        <h2>{modo === "editar" ? "Editar Producto" : "Nuevo Producto"}</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9999]">
+      <div className="bg-[#1f1f1f] text-[#f0f0f0] rounded-[12px] shadow-xl p-8 w-[90%] max-w-[600px] max-h-[90vh] overflow-y-auto animate-fadeIn">
+        <h2 className="text-2xl font-semibold text-center text-[#00d1b2] mb-6">
+          {modo === "crear" ? "Nuevo Producto" : "Editar Producto"}
+        </h2>
 
-        <label htmlFor="nombre">Nombre</label>
+        <label htmlFor="nombre" className="block mb-2 text-[#ccc] font-medium">
+          Nombre
+        </label>
         <input
           ref={inputRef}
           id="nombre"
           name="nombre"
-          className={!form.nombre ? "input-error" : ""}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors ${
+            !form.nombre ? "input-error" : ""
+          }`}
           value={form.nombre}
           onChange={handleChange}
           autoComplete="off"
         />
 
-        <label htmlFor="unidad_medida">Unidad de medida</label>
+        <label
+          htmlFor="unidad_medida"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Unidad de medida
+        </label>
         <input
           id="unidad_medida"
           name="unidad_medida"
-          className={!form.unidad_medida ? "input-error" : ""}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors ${
+            !form.unidad_medida ? "input-error" : ""
+          }`}
           value={form.unidad_medida}
           onChange={handleChange}
           autoComplete="off"
         />
 
-        <label htmlFor="precio_venta">Precio venta</label>
+        <label
+          htmlFor="precio_venta"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Precio venta
+        </label>
         <input
           id="precio_venta"
           name="precio_venta"
           type="number"
           onWheel={(e) => e.target.blur()}
           onKeyDown={preventInvalidNumberInput}
-          className={!form.precio_venta ? "input-error" : ""}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors ${
+            !form.precio_venta ? "input-error" : ""
+          }`}
           value={form.precio_venta}
           onChange={handleChange}
           autoComplete="off"
         />
 
-        <label htmlFor="precio_compra">Precio compra</label>
+        <label
+          htmlFor="precio_compra"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Precio compra
+        </label>
         <input
           id="precio_compra"
           name="precio_compra"
           type="number"
           onKeyDown={preventInvalidNumberInput}
           onWheel={(e) => e.target.blur()}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.precio_compra}
           onChange={handleChange}
           autoComplete="off"
         />
-
-        <label htmlFor="iva">IVA (%)</label>
+        <label htmlFor="iva" className="block mb-2 text-[#ccc] font-medium">
+          IVA(%)
+        </label>
         <input
           id="iva"
           name="iva"
           type="number"
           onKeyDown={preventInvalidNumberInput}
           onWheel={(e) => e.target.blur()}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.iva}
           onChange={handleChange}
           autoComplete="off"
         />
-
-        <label htmlFor="stock">Stock</label>
+        <label htmlFor="stock" className="block mb-2 text-[#ccc] font-medium">
+          Stock
+        </label>
         <input
           id="stock"
           name="stock"
           type="number"
           onKeyDown={preventInvalidNumberInput}
           onWheel={(e) => e.target.blur()}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.stock}
           onChange={handleChange}
           autoComplete="off"
         />
-
-        <label htmlFor="stock_minimo">Stock mínimo</label>
+        <label
+          htmlFor="stock_minimo"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Stock Minimo
+        </label>
         <input
           id="stock_minimo"
           name="stock_minimo"
           type="number"
           onKeyDown={preventInvalidNumberInput}
           onWheel={(e) => e.target.blur()}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.stock_minimo}
           onChange={handleChange}
           autoComplete="off"
         />
 
         <div className="image-upload-container">
-          <label htmlFor="url_image">Imagen</label>
+          <label
+            htmlFor="url_image"
+            className="block mb-2 text-[#ccc] font-medium"
+          >
+            Imagen
+          </label>
           <input
             type="file"
             id="url_image"
@@ -267,41 +306,58 @@ const ModalProducto = ({
                 setPreviewImage(URL.createObjectURL(file));
               }
             }}
+            className="w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors"
           />
-
           {form.url_image && (
             <div className="preview-img">
               <img src={previewImage} alt="Vista previa" />
             </div>
           )}
         </div>
-
-        <label htmlFor="descripcion">Descripción</label>
+        <label
+          htmlFor="descripcion"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Descripcion
+        </label>
         <input
           id="descripcion"
           name="descripcion"
+          type="number"
+          onKeyDown={preventInvalidNumberInput}
+          onWheel={(e) => e.target.blur()}
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.descripcion}
           onChange={handleChange}
           autoComplete="off"
         />
-
-        <div className="switch-group">
-          <span>Activo</span>
-          <label className="switch">
+        <div className="flex gap-4 mb-3 items-center">
+          <label htmlFor="esta_activo" className="text-[#ccc] font-medium">
+            Activo
+          </label>
+          <label className="relative inline-block w-11 h-6 mt-1">
             <input
               type="checkbox"
               name="esta_activo"
               checked={form.esta_activo}
               onChange={handleChange}
+              className="sr-only peer"
             />
-            <span className="slider"></span>
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-gray-600 rounded-full transition duration-300 peer-checked:bg-green-500"></div>
+            <div className="absolute h-4.5 w-4.5 left-1 top-1 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-5"></div>
           </label>
         </div>
 
-        <label htmlFor="proveedor_id">Proveedor</label>
+        <label
+          htmlFor="proveedor_id"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Proveedor
+        </label>
         <select
           name="proveedor_id"
           id="proveedor_id"
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.proveedor_id}
           onChange={handleChange}
         >
@@ -313,10 +369,16 @@ const ModalProducto = ({
           ))}
         </select>
 
-        <label htmlFor="oferta_id">Oferta</label>
+        <label
+          htmlFor="oferta_id"
+          className="block mb-2 text-[#ccc] font-medium"
+        >
+          Oferta
+        </label>
         <select
           name="oferta_id"
           id="oferta_id"
+          className={`w-full p-2.5 rounded-[8px] bg-[#2a2a2a] border border-[#444] text-white text-[0.95rem] focus:outline-none focus:ring-2 focus:ring-[#00bcd4] focus:bg-[#1c1c1c] transition-colors`}
           value={form.oferta_id}
           onChange={handleChange}
         >
@@ -328,14 +390,19 @@ const ModalProducto = ({
           ))}
         </select>
 
-        <div className="modal-actions">
-          <button onClick={handleSubmit}>Guardar</button>
+        <div className="modal-actions flex justify-between gap-4 mt-6">
+          <button
+            onClick={handleSubmit}
+            className="bg-[#00bcd4] hover:bg-[#0097a7] text-white font-bold px-4 py-2 rounded-[10px] transition"
+          >
+            Guardar
+          </button>
           <button
             onClick={() => {
               resetForm();
               onClose();
             }}
-            className="btn-cancelar-producto"
+            className="bg-[#444] hover:bg-[#666] text-white font-bold px-4 py-2 rounded-[10px] transition"
           >
             Cancelar
           </button>

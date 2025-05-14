@@ -1,7 +1,6 @@
-// src/components/Layout.jsx
+
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "./compras.css";
 import API_URL from "../../config/config";
 
 const Compras = () => {

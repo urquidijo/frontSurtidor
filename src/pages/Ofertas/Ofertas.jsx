@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./ofertas.css";
 import API_URL from "../../config/config.js";
 import ModalOferta from "./ModalOfertas.jsx";
 import { showToast } from "../../utils/toastUtils";
@@ -105,38 +104,63 @@ const Ofertas = () => {
   };
 
   return (
-    <div className="ofertas-container">
-      <h2 className="ofertas-title">Gestión de Descuentos</h2>
-      <button className="crear-btn" onClick={() => setOfertaEditando({})}>
-        Crear Nuevo Descuento
-      </button>
-      <div className="tabla-ofertas-wrapper">
-        <table className="tabla-ofertas">
-          <thead>
+    <div className="p-8 text-[#f1f1f1]">
+      <h2 className="text-[1.8rem] mb-6 text-[#00d1b2] font-bold">
+        Gestión de Descuentos
+      </h2>
+
+      <div className="flex justify-start mb-4">
+        <button
+          className="bg-[#00d1b2] text-black px-5 py-2 rounded-lg font-bold hover:bg-[#00bfa4] transition"
+          onClick={() => setOfertaEditando({})}
+        >
+          + Crear Nuevo Descuento
+        </button>
+      </div>
+
+      <div className="overflow-x-auto rounded-xl shadow-md bg-[#2a2a2a]">
+        <table className="w-full min-w-[800px] border-collapse">
+          <thead className="bg-[#1c1c1c]">
             <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Porcentaje</th>
-              <th>Activo</th>
-              <th>Acciones</th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Nombre
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Descripción
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Porcentaje
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Activo
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
             {ofertas.map((o) => (
-              <tr key={o.id}>
-                <td>{o.nombre}</td>
-                <td>{o.descripcion}</td>
-                <td>{o.porcentaje}%</td>
-                <td>{o.esta_activo ? "Sí" : "No"}</td>
-                <td>
+              <tr key={o.id} className="hover:bg-[#1f1f1f] transition">
+                <td className="px-4 py-3 border-b border-[#444]">{o.nombre}</td>
+                <td className="px-4 py-3 border-b border-[#444]">
+                  {o.descripcion}
+                </td>
+                <td className="px-4 py-3 border-b border-[#444]">
+                  {o.porcentaje}%
+                </td>
+                <td className="px-4 py-3 border-b border-[#444]">
+                  {o.esta_activo ? "Sí" : "No"}
+                </td>
+                <td className="px-4 py-3 border-b border-[#444]">
                   <button
-                    className="edit-btn"
+                    className="bg-[#00d1b2] text-black px-3 py-1 rounded-md mr-2 text-sm hover:bg-[#00bfa4] transition"
                     onClick={() => setOfertaEditando(o)}
                   >
                     Editar
                   </button>
                   <button
-                    className="delete-btn"
+                    className="bg-[#ff5c5c] text-white px-3 py-1 rounded-md text-sm hover:bg-[#e04848] transition"
                     onClick={() => handleDelete(o.id)}
                   >
                     Eliminar

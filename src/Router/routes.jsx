@@ -12,6 +12,8 @@ import Ventas from "../pages/Ventas/Ventas.jsx";
 import Inventario from "../pages/Inventario/Inventario.jsx";
 import Ofertas from "../pages/Ofertas/Ofertas.jsx";
 import ChangePassword from "../pages/Login/ChangePassword.jsx";
+import InventarioCombustible from "../pages/InventarioCombustible/InventarioCombustible.jsx";
+import Bitacora from "../pages/Bitacora/Bitacora.jsx";
 
 const Router = () => {
   return (
@@ -26,7 +28,9 @@ const Router = () => {
           <Route path="/proveedores" element={<Proveedores />} />
           <Route path="/compras" element={<Compras />} />
           <Route path="/ventas" element={<Ventas />} />
-          <Route path="/inventario" element={<Inventario />} />
+          <Route path="/inventario/productos" element={<Inventario />} />
+          <Route path="/inventario/combustible" element={<InventarioCombustible />} />
+          <Route path="/bitacora" element={<Bitacora />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/asistencias" element={<RegistroAsistencia />} />
           <Route path="/ofertas" element={<Ofertas />} />
