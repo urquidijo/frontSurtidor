@@ -8,7 +8,7 @@ const ModalProducto = ({
   producto,
   categoriaId,
   proveedores,
-  ofertas,
+  descuentos,
   onClose,
   onGuardar,
 }) => {
@@ -26,7 +26,7 @@ const ModalProducto = ({
     categoria_id: categoriaId,
     sucursal_id: sessionStorage.getItem("sucursalId"),
     proveedor_id: "",
-    oferta_id: "",
+    descuento_id: "",
     url_image: null,
   });
 
@@ -36,6 +36,7 @@ const ModalProducto = ({
         ...producto,
         categoria_id: categoriaId,
         sucursal_id: sessionStorage.getItem("sucursalId"),
+        descuento_id: producto.id_descuento || "",
       });
     }
   }, [modo, producto, categoriaId]);
@@ -228,17 +229,17 @@ const ModalProducto = ({
             </div>
 
             <div>
-              <label className="block text-[#ccc] mb-2">Oferta</label>
+              <label className="block text-[#ccc] mb-2">Descuento</label>
               <select
-                name="oferta_id"
-                value={formData.oferta_id}
+                name="descuento_id"
+                value={formData.descuento_id}
                 onChange={handleChange}
                 className="w-full bg-[#1f1f1f] text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00d1b2]"
               >
-                <option value="">Sin oferta</option>
-                {ofertas?.filter(oferta => oferta.esta_activo).map((oferta) => (
-                  <option key={oferta.id} value={oferta.id}>
-                    {oferta.nombre} - {oferta.porcentaje}% desc.
+                <option value="">Sin descuento</option>
+                {descuentos?.filter(descuento => descuento.esta_activo).map((descuento) => (
+                  <option key={descuento.id} value={descuento.id}>
+                    {descuento.nombre} - {descuento.porcentaje}% desc.
                   </option>
                 ))}
               </select>

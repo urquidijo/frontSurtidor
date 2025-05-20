@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { mostrarConfirmacion, mostrarExito, mostrarError } from "../../utils/alertUtils";
 import { showToast } from "../../utils/toastUtils";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+import API_URL from "../../config/config";
 
 const InventarioCombustible = () => {
   const [showModal, setShowModal] = useState(false);

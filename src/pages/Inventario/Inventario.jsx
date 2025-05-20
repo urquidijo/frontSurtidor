@@ -13,6 +13,7 @@ import { FaBox, FaPlus, FaEdit, FaTrash, FaTags, FaShoppingCart } from 'react-ic
 const Inventario = () => {
   const [categorias, setCategorias] = useState([]);
   const [productosPorCategoria, setProductosPorCategoria] = useState({});
+  const [descuentos, setDescuentos] = useState([]);
   const sucursalId = sessionStorage.getItem("sucursalId");
   const [modalCategoriaAbierto, setModalCategoriaAbierto] = useState(false);
   const [modoCategoria, setModoCategoria] = useState("crear"); // "crear" o "eliminar"
@@ -43,10 +44,22 @@ const Inventario = () => {
     }
   };
 
+  const fetchDescuentos = async () => {
+    try {
+      const res = await fetch(`${API_URL}/descuentos`);
+      const data = await res.json();
+      setDescuentos(data);
+    } catch (err) {
+      console.error("Error cargando descuentos", err);
+      showToast("warning", "Error al obtener los descuentos");
+    }
+  };
+
   useEffect(() => {
     fetchCategoriasYProductos();
     fetchProveedores();
     fetchOfertas();
+    fetchDescuentos();
   }, []);
 
   const fetchProveedores = async () => {
@@ -404,6 +417,7 @@ const Inventario = () => {
           producto={productoSeleccionado}
           categoriaId={categoriaParaProducto}
           proveedores={proveedores}
+          descuentos={descuentos}
           onClose={() => setModalAbierto(false)}
           onGuardar={handleGuardarProducto}
         />
