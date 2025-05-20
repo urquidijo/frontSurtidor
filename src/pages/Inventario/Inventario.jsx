@@ -14,6 +14,9 @@ const Inventario = () => {
   const [categorias, setCategorias] = useState([]);
   const [productosPorCategoria, setProductosPorCategoria] = useState({});
   const sucursalId = sessionStorage.getItem("sucursalId");
+  const usuarioId = sessionStorage.getItem("usuarioId");
+  const [permisos, setPermisos] = useState([]);
+  const [rolUsuario, setRolUsuario] = useState("");
   const [modalCategoriaAbierto, setModalCategoriaAbierto] = useState(false);
   const [modoCategoria, setModoCategoria] = useState("crear"); // "crear" o "eliminar"
 
@@ -32,6 +35,15 @@ const Inventario = () => {
 
   const [ofertas, setOfertas] = useState([]);
 
+  // Verificar si el usuario tiene permisos de administración
+  const hasAdminPermissions = () => {
+    // Verificar que el usuario tenga el rol correcto Y el permiso específico
+    const hasSpecificPermission = permisos.includes("gestionar_inventario");
+    
+    // Debe cumplir ambas condiciones: rol adecuado y permiso específico
+    return hasSpecificPermission;
+  };
+
   const fetchOfertas = async () => {
     try {
       const res = await fetch(`${API_URL}/descuentos`);
@@ -39,9 +51,25 @@ const Inventario = () => {
       setOfertas(data);
     } catch (err) {
       console.error("Error cargando ofertas", err);
-      showToast("warning", "error al obtener los descuentos");
+      showToast("warning", "Error al obtener los descuentos");
     }
   };
+
+  // Cargar permisos del usuario
+  useEffect(() => {
+    if (usuarioId) {
+      fetch(`${API_URL}/usuarios/permisos/${usuarioId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // Guardamos los permisos y el rol del usuario
+          setPermisos(data.permisos.map((p) => p.nombre));
+          setRolUsuario(data.rol || "");
+          console.log("Rol del usuario:", data.rol);
+          console.log("Permisos del usuario:", data.permisos.map(p => p.nombre));
+        })
+        .catch((err) => console.error("Error al cargar permisos:", err));
+    }
+  }, [usuarioId]);
 
   useEffect(() => {
     fetchCategoriasYProductos();
@@ -56,7 +84,7 @@ const Inventario = () => {
       setProveedores(data);
     } catch (err) {
       console.error("Error cargando proveedores", err);
-      showToast("warning", "error al obtener lps proveedores");
+      showToast("warning", "Error al obtener los proveedores");
     }
   };
 
@@ -83,11 +111,17 @@ const Inventario = () => {
       setProductosPorCategoria(productosMap);
     } catch (err) {
       console.error("Error cargando categorías o productos", err);
-      showToast("warning", "error al obtener las categorias y productos");
+      showToast("warning", "Error al obtener las categorías y productos");
     }
   };
 
   const handleCrearCategoria = async () => {
+    // Verificar permisos
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para crear categorías. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     const { nombre, descripcion } = nuevaCategoria;
     if (!nombre || !descripcion) {
       mostrarError("Por favor, completa al menos nombre y descripción.");
@@ -115,6 +149,12 @@ const Inventario = () => {
   };
 
   const handleEliminarCategoria = async () => {
+    // Verificar permisos
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para eliminar categorías. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     if (!categoriaSeleccionada) return;
 
     const result = await mostrarConfirmacion({
@@ -148,6 +188,12 @@ const Inventario = () => {
   };
 
   const abrirModalNuevoProducto = (categoriaId) => {
+    // Verificar permisos
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para crear productos. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     setCategoriaParaProducto(categoriaId);
     setProductoSeleccionado(null);
     setModoProducto("crear");
@@ -155,6 +201,12 @@ const Inventario = () => {
   };
 
   const abrirModalEditarProducto = (producto, categoriaId) => {
+    // Verificar permisos
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para editar productos. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     setCategoriaParaProducto(categoriaId);
     setProductoSeleccionado(producto);
     setModoProducto("editar");
@@ -162,6 +214,12 @@ const Inventario = () => {
   };
 
   const handleGuardarProducto = async (datosProducto) => {
+    // Verificar permisos
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para guardar productos. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     try {
       const metodo = modoProducto === "crear" ? "POST" : "PUT";
       const url =
@@ -192,6 +250,12 @@ const Inventario = () => {
   };
 
   const handleEliminarProducto = async (productoId) => {
+    // Verificar permisos
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para eliminar productos. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     const result = await mostrarConfirmacion({
       titulo: "¿Eliminar producto?",
       texto: "Esta acción no se puede deshacer.",
@@ -271,15 +335,21 @@ const Inventario = () => {
       <div className="bg-[#2a2a2a] rounded-xl p-6 shadow-lg border border-[#444] mb-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-[#00d1b2]">Categorías</h2>
-          <button
-            onClick={() => {
-              setModoCategoria("crear");
-              setModalCategoriaAbierto(true);
-            }}
-            className="bg-[#00d1b2] hover:bg-[#00b89c] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300"
-          >
-            <FaPlus /> Nueva Categoría
-          </button>
+          {hasAdminPermissions() ? (
+            <button
+              onClick={() => {
+                setModoCategoria("crear");
+                setModalCategoriaAbierto(true);
+              }}
+              className="bg-[#00d1b2] hover:bg-[#00b89c] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-300"
+            >
+              <FaPlus /> Nueva Categoría
+            </button>
+          ) : (
+            <span className="text-sm text-[#888]">
+              No tienes permisos para crear categorías
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -294,17 +364,19 @@ const Inventario = () => {
               <div className="flex justify-between items-start mb-3">
                 <h3 className="text-lg font-semibold text-[#00d1b2]">{categoria.nombre}</h3>
                 <div className="flex gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCategoriaSeleccionada(categoria.id);
-                      setModoCategoria("eliminar");
-                      setModalCategoriaAbierto(true);
-                    }}
-                    className="text-red-400 hover:text-red-300 transition-colors"
-                  >
-                    <FaTrash />
-                  </button>
+                  {hasAdminPermissions() && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCategoriaSeleccionada(categoria.id);
+                        setModoCategoria("eliminar");
+                        setModalCategoriaAbierto(true);
+                      }}
+                      className="text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      <FaTrash />
+                    </button>
+                  )}
                 </div>
               </div>
               <p className="text-[#ccc] text-sm mb-4">{categoria.descripcion}</p>
@@ -312,15 +384,21 @@ const Inventario = () => {
                 <span className="text-[#ccc] text-sm">
                   {productosPorCategoria[categoria.id]?.length || 0} productos
                 </span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    abrirModalNuevoProducto(categoria.id);
-                  }}
-                  className="text-[#00d1b2] hover:text-[#00b89c] text-sm flex items-center gap-1 transition-colors"
-                >
-                  <FaPlus className="text-xs" /> Agregar Producto
-                </button>
+                {hasAdminPermissions() ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      abrirModalNuevoProducto(categoria.id);
+                    }}
+                    className="text-[#00d1b2] hover:text-[#00b89c] text-sm flex items-center gap-1 transition-colors"
+                  >
+                    <FaPlus className="text-xs" /> Agregar Producto
+                  </button>
+                ) : (
+                  <span className="text-xs text-[#888]">
+                    Sin permiso para agregar
+                  </span>
+                )}
               </div>
             </div>
           ))}
@@ -362,20 +440,26 @@ const Inventario = () => {
                             <p className="text-white font-semibold">Bs. {producto.precio_venta}</p>
                           </div>
                         </div>
-                        <div className="flex justify-end gap-2 mt-4">
-                          <button
-                            onClick={() => abrirModalEditarProducto(producto, categoria.id)}
-                            className="bg-[#00d1b2] hover:bg-[#00b89c] text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
-                          >
-                            <FaEdit className="text-xs" /> Editar
-                          </button>
-                          <button
-                            onClick={() => handleEliminarProducto(producto.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
-                          >
-                            <FaTrash className="text-xs" /> Eliminar
-                          </button>
-                        </div>
+                        {hasAdminPermissions() ? (
+                          <div className="flex justify-end gap-2 mt-4">
+                            <button
+                              onClick={() => abrirModalEditarProducto(producto, categoria.id)}
+                              className="bg-[#00d1b2] hover:bg-[#00b89c] text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
+                            >
+                              <FaEdit className="text-xs" /> Editar
+                            </button>
+                            <button
+                              onClick={() => handleEliminarProducto(producto.id)}
+                              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
+                            >
+                              <FaTrash className="text-xs" /> Eliminar
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex justify-end mt-4">
+                            <span className="text-xs text-[#888] italic">Sin permiso de edición</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -404,6 +488,7 @@ const Inventario = () => {
           producto={productoSeleccionado}
           categoriaId={categoriaParaProducto}
           proveedores={proveedores}
+          ofertas={ofertas}
           onClose={() => setModalAbierto(false)}
           onGuardar={handleGuardarProducto}
         />

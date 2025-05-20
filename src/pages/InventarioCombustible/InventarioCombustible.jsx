@@ -12,6 +12,9 @@ const InventarioCombustible = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentTanqueId, setCurrentTanqueId] = useState(null);
   const sucursalId = sessionStorage.getItem("sucursalId");
+  const usuarioId = sessionStorage.getItem("usuarioId");
+  const [permisos, setPermisos] = useState([]);
+  const [rolUsuario, setRolUsuario] = useState("");
   const [form, setForm] = useState({
     nombre: "",
     descripcion: "",
@@ -28,6 +31,32 @@ const InventarioCombustible = () => {
   const capacidadTotal = tanques.reduce((acc, t) => acc + (Number(t.capacidad_max) || 0), 0);
   const stockActual = tanques.reduce((acc, t) => acc + (Number(t.stock) || 0), 0);
   const ocupacion = capacidadTotal > 0 ? Math.round((stockActual / capacidadTotal) * 100) : 0;
+
+  // Verificar si el usuario tiene permisos de administración
+  const hasAdminPermissions = () => {
+    // Verificar que el usuario tenga el rol correcto Y el permiso específico
+    const hasRolePermission = rolUsuario === "administrador" || rolUsuario === "supervisor";
+    const hasSpecificPermission = permisos.includes("gestionar_inventario_combustible");
+    
+    // Debe cumplir ambas condiciones: rol adecuado y permiso específico
+    return hasRolePermission && hasSpecificPermission;
+  };
+
+  // Cargar permisos del usuario
+  useEffect(() => {
+    if (usuarioId) {
+      fetch(`${API_URL}/usuarios/permisos/${usuarioId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          // Guardamos los permisos y el rol del usuario
+          setPermisos(data.permisos.map((p) => p.nombre));
+          setRolUsuario(data.rol || "");
+          console.log("Rol del usuario:", data.rol);
+          console.log("Permisos del usuario:", data.permisos.map(p => p.nombre));
+        })
+        .catch((err) => console.error("Error al cargar permisos:", err));
+    }
+  }, [usuarioId]);
 
   const fetchTanques = async () => {
     setLoading(true);
@@ -86,6 +115,12 @@ const InventarioCombustible = () => {
   };
 
   const handleOpenModal = (isEdit = false, tanque = null) => {
+    // Verificar permisos antes de abrir el modal
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para realizar esta acción. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario_comustible'");
+      return;
+    }
+    
     setError("");
     
     if (isEdit && tanque) {
@@ -122,6 +157,13 @@ const InventarioCombustible = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Verificar permisos antes de enviar el formulario
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para realizar esta acción. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+    
     setError("");
     setFormSubmitting(true);
     
@@ -188,6 +230,12 @@ const InventarioCombustible = () => {
   };
 
   const handleDeleteTanque = async (id) => {
+    // Verificar permisos antes de intentar eliminar
+    if (!hasAdminPermissions()) {
+      showToast("warning", "No tienes permisos para eliminar tanques. Se requiere ser administrador o supervisor y tener el permiso 'gestionar_inventario'");
+      return;
+    }
+
     const result = await mostrarConfirmacion({
       titulo: "¿Eliminar tanque?",
       texto: "Esta acción no se puede deshacer.",
@@ -252,24 +300,33 @@ const InventarioCombustible = () => {
           <div className="bg-[#2a2a2a] rounded-lg p-6 border border-[#444]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-2xl font-bold text-[#00d1b2]">Tanques de Almacenamiento</h3>
-              <button
-                className="bg-[#00bcd4] hover:bg-[#0097a7] text-white font-semibold px-4 py-2 rounded transition"
-                onClick={() => handleOpenModal(false)}
-              >
-                + Nuevo Tanque
-              </button>
+              {/* Solo mostrar botón de nuevo tanque si tiene permisos */}
+              {hasAdminPermissions() ? (
+                <button
+                  className="bg-[#00bcd4] hover:bg-[#0097a7] text-white font-semibold px-4 py-2 rounded transition"
+                  onClick={() => handleOpenModal(false)}
+                >
+                  + Nuevo Tanque
+                </button>
+              ) : (
+                <span className="text-sm text-[#888]">
+                  No tienes permisos para crear tanques
+                </span>
+              )}
             </div>
             {loading ? (
               <div className="text-center text-[#ccc] py-8">Cargando...</div>
             ) : tanques.length === 0 ? (
               <div className="bg-[#1f1f1f] rounded-lg p-6 flex flex-col items-center border border-[#444]">
                 <p className="mb-4 text-[#ccc]">No se encontraron tanques registrados para esta sucursal.</p>
-                <button
-                  className="bg-[#00bcd4] hover:bg-[#0097a7] text-white font-semibold px-4 py-2 rounded transition"
-                  onClick={() => handleOpenModal(false)}
-                >
-                  Registrar primer tanque
-                </button>
+                {hasAdminPermissions() && (
+                  <button
+                    className="bg-[#00bcd4] hover:bg-[#0097a7] text-white font-semibold px-4 py-2 rounded transition"
+                    onClick={() => handleOpenModal(false)}
+                  >
+                    Registrar primer tanque
+                  </button>
+                )}
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -283,7 +340,7 @@ const InventarioCombustible = () => {
                       <th className="py-2 px-4">Fecha Instalación</th>
                       <th className="py-2 px-4">Última Revisión</th>
                       <th className="py-2 px-4">Estado</th>
-                      <th className="py-2 px-4">Acciones</th>
+                      {hasAdminPermissions() && <th className="py-2 px-4">Acciones</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -306,24 +363,26 @@ const InventarioCombustible = () => {
                             {t.esta_activo ? 'Activo' : 'Inactivo'}
                           </span>
                         </td>
-                        <td className="py-2 px-4">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleOpenModal(true, t)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"
-                              title="Editar tanque"
-                            >
-                              ✏️ Editar
-                            </button>
-                            <button
-                              onClick={() => handleDeleteTanque(t.id)}
-                              className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs"
-                              title="Eliminar tanque"
-                            >
-                              🗑️ Eliminar
-                            </button>
-                          </div>
-                        </td>
+                        {hasAdminPermissions() && (
+                          <td className="py-2 px-4">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleOpenModal(true, t)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"
+                                title="Editar tanque"
+                              >
+                                ✏️ Editar
+                              </button>
+                              <button
+                                onClick={() => handleDeleteTanque(t.id)}
+                                className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs"
+                                title="Eliminar tanque"
+                              >
+                                🗑️ Eliminar
+                              </button>
+                            </div>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
