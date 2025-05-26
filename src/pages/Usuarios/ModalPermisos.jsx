@@ -8,7 +8,7 @@ const ModalPermisos = ({ usuarioSeleccionado, onClose, onRolActualizado }) => {
   const [permisos, setPermisos] = useState([]);
   const [permisosUsuario, setPermisosUsuario] = useState(new Set());
   const [rolSeleccionado, setRolSeleccionado] = useState("");
-
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
   useEffect(() => {
     if (usuarioSeleccionado) {
@@ -83,6 +83,15 @@ const ModalPermisos = ({ usuarioSeleccionado, onClose, onRolActualizado }) => {
       toast.dismiss(loadingToast);
   
       if (response.ok) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar permisos",
+            estado: "exitoso",
+          }),
+        });
         toast.success("Permisos actualizados correctamente");
         // Recargar los permisos desde backend
         const usuarioPermisosRes = await fetch(`${API_URL}/usuarios/permisos/${usuarioSeleccionado.id}`);
@@ -98,7 +107,15 @@ const ModalPermisos = ({ usuarioSeleccionado, onClose, onRolActualizado }) => {
         onClose();
   
       } else {
-        const error = await response.json();
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar permisos",
+            estado: "fallido",
+          }),
+        });
         showToast("error", "Error al actualizar los Permisos");
       }
     } catch (error) {

@@ -18,7 +18,9 @@ const Login = () => {
 
   useEffect(() => {
     const isValid = Object.values(errors).every((error) => !error);
-    const allFieldsFilled = Object.values(objData).every((v) => v.trim() !== "");
+    const allFieldsFilled = Object.values(objData).every(
+      (v) => v.trim() !== ""
+    );
     setIsDisabled(!isValid || !allFieldsFilled);
   }, [errors, objData]);
 
@@ -63,6 +65,13 @@ const Login = () => {
       sessionStorage.setItem("authToken", data.token);
       sessionStorage.setItem("usuarioId", data.usuario.id);
 
+      const usuarioId = sessionStorage.getItem("usuarioId");
+      fetch(`${API_URL}/bitacora/entrada`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuarioId, acciones: "logIn",estado: "exitoso", }),
+      });
+
       const { sucursal } = data.usuario;
       if (sucursal) {
         sessionStorage.setItem("sucursalId", sucursal.id);
@@ -82,8 +91,10 @@ const Login = () => {
   const handleSendReset = async () => {
     try {
       if (!resetUser.ci.trim()) return setResetError("El usuario es requerido");
-      if (!resetUser.email.trim()) return setResetError("El correo es requerido");
-      if (!/\S+@\S+\.\S+/.test(resetUser.email)) return setResetError("Correo no válido");
+      if (!resetUser.email.trim())
+        return setResetError("El correo es requerido");
+      if (!/\S+@\S+\.\S+/.test(resetUser.email))
+        return setResetError("Correo no válido");
 
       const loading = toast.loading("Enviando correo...");
       const res = await fetch(`${API_URL}/auth/enviar-reset`, {
@@ -119,8 +130,12 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="bg-black/70 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md text-slate-200"
       >
-        <h2 className="text-3xl font-bold text-center text-cyan-400 mb-2">Bienvenidos a Octano</h2>
-        <p className="text-center text-slate-400 mb-6">Por favor ingrese sus datos</p>
+        <h2 className="text-3xl font-bold text-center text-cyan-400 mb-2">
+          Bienvenidos a Octano
+        </h2>
+        <p className="text-center text-slate-400 mb-6">
+          Por favor ingrese sus datos
+        </p>
 
         <div className="mb-4">
           <label className="block mb-1 text-slate-300">Usuario</label>
@@ -136,7 +151,9 @@ const Login = () => {
               className="bg-transparent outline-none text-white flex-1"
             />
           </div>
-          {errors.ci && <span className="text-red-400 text-sm">{errors.ci}</span>}
+          {errors.ci && (
+            <span className="text-red-400 text-sm">{errors.ci}</span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -157,7 +174,9 @@ const Login = () => {
               className="text-slate-400 cursor-pointer ml-2"
             />
           </div>
-          {errors.password && <span className="text-red-400 text-sm">{errors.password}</span>}
+          {errors.password && (
+            <span className="text-red-400 text-sm">{errors.password}</span>
+          )}
         </div>
 
         <button
@@ -179,8 +198,12 @@ const Login = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-xl p-6 w-full max-w-sm shadow-2xl text-center animate-fade-in">
-            <h3 className="text-xl font-semibold mb-3">Restablecer contraseña</h3>
-            <h4 className="text-sm mb-4 text-slate-300">Revisá spam en tu correo 📬</h4>
+            <h3 className="text-xl font-semibold mb-3">
+              Restablecer contraseña
+            </h3>
+            <h4 className="text-sm mb-4 text-slate-300">
+              Revisá spam en tu correo 📬
+            </h4>
 
             <input
               type="text"
@@ -204,7 +227,9 @@ const Login = () => {
               }}
               className="w-full mb-3 p-2 rounded bg-white/80 text-black outline-none"
             />
-            {resetError && <p className="text-red-400 text-sm mb-2">{resetError}</p>}
+            {resetError && (
+              <p className="text-red-400 text-sm mb-2">{resetError}</p>
+            )}
 
             <div className="flex gap-2 mt-2">
               <button

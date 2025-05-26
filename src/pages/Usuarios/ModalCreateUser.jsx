@@ -33,6 +33,7 @@ const ModalCreateUser = ({ onClose, onUserCreated }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [sucursales, setSucursales] = useState([]);
   const [roles, setRoles] = useState([]);
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
 
   useEffect(() => {
@@ -90,12 +91,30 @@ const ModalCreateUser = ({ onClose, onUserCreated }) => {
         body: JSON.stringify(objData),
       });
       if (response.status === 400) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear usuario",
+            estado: "exitoso",
+          }),
+        });
         const data = await response.json();
         const errs = {};
         data.errors.forEach((err) => (errs[err.path] = err.msg));
         setErrors(errs);
         throw new Error("Error al enviar datos");
       } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear usuario",
+            estado: "fallido",
+          }),
+        });
         onUserCreated();
         onClose();
       }
@@ -139,93 +158,109 @@ const ModalCreateUser = ({ onClose, onUserCreated }) => {
         },
         { icon: faHouse, name: "domicilio", placeholder: "Domicilio" },
       ].map(({ icon, name, placeholder, type }) => (
-        <div
-          key={name}
-          className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-2"
-        >
-          <FontAwesomeIcon icon={icon} className="text-teal-400 mr-3" />
-          <input
-            type={type}
-            name={name}
-            placeholder={placeholder}
-            onWheel={(e) => e.target.blur()}
-            autoComplete="off"
-            value={objData[name]}
-            onChange={handleChange}
-            className="w-full bg-transparent outline-none text-white placeholder-gray-400"
-          />
+        <div key={name} className="mb-4">
+          <div className="flex items-center bg-[#2a2a2a] rounded-md px-3 py-2">
+            <FontAwesomeIcon icon={icon} className="text-teal-400 mr-3" />
+            <input
+              type={type}
+              name={name}
+              placeholder={placeholder}
+              onWheel={(e) => e.target.blur()}
+              autoComplete="off"
+              value={objData[name]}
+              onChange={handleChange}
+              className="w-full bg-transparent outline-none text-white placeholder-gray-400"
+            />
+          </div>
           {errors[name] && (
-            <span className="text-red-500 text-sm ml-2">{errors[name]}</span>
+            <span className="text-red-500 text-sm mt-1 block">{errors[name]}</span>
           )}
         </div>
       ))}
 
-      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-1">
-        <FontAwesomeIcon icon={faPerson} className="text-teal-400 mr-3" />
-        <select
-          name="sexo"
-          value={objData.sexo}
-          onChange={handleChange}
-          className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
-        >
-          <option value="">Selecciona tu sexo</option>
-          <option value="M">Masculino</option>
-          <option value="F">Femenino</option>
-        </select>
-      </div>
-
-      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-2 relative">
-        <FontAwesomeIcon icon={faLock} className="text-teal-400 mr-3" />
-        <input
-          type={showPassword ? "text" : "password"}
-          name="password"
-          placeholder="Contraseña"
-          value={objData.password}
-          onChange={handleChange}
-          className="w-full bg-transparent outline-none text-white placeholder-gray-400"
-        />
-        <FontAwesomeIcon
-          icon={showPassword ? faEyeSlash : faEye}
-          className="absolute right-3 cursor-pointer text-gray-400 hover:text-white"
-          onClick={() => setShowPassword(!showPassword)}
-        />
-        {errors.password && (
-          <span className="text-red-500 text-sm ml-2">{errors.password}</span>
+      <div className="mb-4">
+        <div className="flex items-center bg-[#2a2a2a] rounded-md px-3 py-1">
+          <FontAwesomeIcon icon={faPerson} className="text-teal-400 mr-3" />
+          <select
+            name="sexo"
+            value={objData.sexo}
+            onChange={handleChange}
+            className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
+          >
+            <option value="">Selecciona tu sexo</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+        {errors.sexo && (
+          <span className="text-red-500 text-sm mt-1 block">{errors.sexo}</span>
         )}
       </div>
 
-      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-4 px-3 py-1">
-        <FontAwesomeIcon icon={faShop} className="text-teal-400 mr-3" />
-        <select
-          name="id_sucursal"
-          value={objData.id_sucursal}
-          onChange={handleChange}
-          className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
-        >
-          <option value="">Selecciona una sucursal</option>
-          {sucursales.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.nombre}
-            </option>
-          ))}
-        </select>
+      <div className="mb-4">
+        <div className="flex items-center bg-[#2a2a2a] rounded-md px-3 py-2 relative">
+          <FontAwesomeIcon icon={faLock} className="text-teal-400 mr-3" />
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Contraseña"
+            value={objData.password}
+            onChange={handleChange}
+            className="w-full bg-transparent outline-none text-white placeholder-gray-400"
+          />
+          <FontAwesomeIcon
+            icon={showPassword ? faEyeSlash : faEye}
+            className="absolute right-3 cursor-pointer text-gray-400 hover:text-white"
+            onClick={() => setShowPassword(!showPassword)}
+          />
+        </div>
+        {errors.password && (
+          <span className="text-red-500 text-sm mt-1 block">{errors.password}</span>
+        )}
       </div>
 
-      <div className="flex items-center bg-[#2a2a2a] rounded-md mb-6 px-3 py-1">
-        <FontAwesomeIcon icon={faUser} className="text-teal-400 mr-3" />
-        <select
-          name="id_rol"
-          value={objData.id_rol}
-          onChange={handleChange}
-          className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
-        >
-          <option value="">Selecciona un rol</option>
-          {roles.map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.nombre}
-            </option>
-          ))}
-        </select>
+      <div className="mb-4">
+        <div className="flex items-center bg-[#2a2a2a] rounded-md px-3 py-1">
+          <FontAwesomeIcon icon={faShop} className="text-teal-400 mr-3" />
+          <select
+            name="id_sucursal"
+            value={objData.id_sucursal}
+            onChange={handleChange}
+            className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
+          >
+            <option value="">Selecciona una sucursal</option>
+            {sucursales.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+        {errors.id_sucursal && (
+          <span className="text-red-500 text-sm mt-1 block">{errors.id_sucursal}</span>
+        )}
+      </div>
+
+      <div className="mb-6">
+        <div className="flex items-center bg-[#2a2a2a] rounded-md px-3 py-1">
+          <FontAwesomeIcon icon={faUser} className="text-teal-400 mr-3" />
+          <select
+            name="id_rol"
+            value={objData.id_rol}
+            onChange={handleChange}
+            className="w-full bg-[#2a2a2a] text-white outline-none appearance-none px-2 py-1 rounded-md"
+          >
+            <option value="">Selecciona un rol</option>
+            {roles.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+        {errors.id_rol && (
+          <span className="text-red-500 text-sm mt-1 block">{errors.id_rol}</span>
+        )}
       </div>
 
       <div className="flex justify-end gap-4">

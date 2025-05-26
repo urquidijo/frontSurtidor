@@ -14,6 +14,16 @@ const Layout = () => {
   const [adminOpen, setAdminOpen] = useState(false);
 
   const handleLogOut = () => {
+    const usuarioId = sessionStorage.getItem("usuarioId");
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "logOut",
+            estado: "exitoso",
+          }),
+        });
     sessionStorage.clear();
     navigate("/");
   };
@@ -101,7 +111,7 @@ const Layout = () => {
           )}
 
           {/* Inventario */}
-          { (
+          {
             <>
               <li
                 className="font-semibold cursor-pointer px-3 py-2 rounded-lg hover:bg-[#2c9d8c33] transition-all"
@@ -134,7 +144,7 @@ const Layout = () => {
                 </ul>
               )}
             </>
-          )}
+          }
 
           {/* Operaciones */}
           <li
@@ -167,6 +177,18 @@ const Layout = () => {
                   onClick={() => navigate("/bitacora")}
                 >
                   Bitácora
+                </li>
+              )}
+              {permisos.includes("gestionar_dispensadores") && (
+                <li
+                  className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
+                    isActive("/dispensadores")
+                      ? "bg-[#2c9d8c] text-white"
+                      : "hover:bg-[#2c9d8c33]"
+                  }`}
+                  onClick={() => navigate("/dispensadores")}
+                >
+                  Dispensadores
                 </li>
               )}
             </ul>

@@ -11,6 +11,7 @@ import {
 const Ofertas = () => {
   const [ofertas, setOfertas] = useState([]);
   const [ofertaEditando, setOfertaEditando] = useState(null);
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
   useEffect(() => {
     fetchOfertas();
@@ -42,9 +43,27 @@ const Ofertas = () => {
       });
 
       if (res.status === 204) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar descuento",
+            estado: "exitoso",
+          }),
+        });
         await mostrarExito("El descuento ha sido eliminado.");
         setOfertas((prev) => prev.filter((o) => o.id !== id));
       } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar descuento",
+            estado: "falido",
+          }),
+        });
         const err = await res.json();
         console.error("Error al eliminar el descuento:", err);
         mostrarError("Error al eliminar el descuento:");
@@ -65,9 +84,27 @@ const Ofertas = () => {
       });
 
       if (!res.ok) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear descuento",
+            estado: "fallido",
+          }),
+        });
         showToast("error", "Descuento creado sin éxito");
         return;
       }
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear descuento",
+            estado: "exitoso",
+          }),
+        });
       showToast("success", "Descuento creado con éxito");
       handleCloseModal();
     } catch (error) {
@@ -87,9 +124,27 @@ const Ofertas = () => {
       });
 
       if (!res.ok) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar descuento",
+            estado: "fallido",
+          }),
+        });
         showToast("error", "Descuento actualizado sin éxito");
         return;
       }
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar descuento",
+            estado: "exitoso",
+          }),
+        });
       showToast("success", "Descueto actualizado con éxito");
       handleCloseModal();
     } catch (error) {

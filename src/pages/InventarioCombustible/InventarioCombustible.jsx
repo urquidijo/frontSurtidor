@@ -189,8 +189,7 @@ const InventarioCombustible = () => {
         : `${API_URL}/tanques`;
         
       const method = isEditing ? "PUT" : "POST";
-      
-      console.log("URL:", url, "Método:", method);
+    
       
       const res = await fetch(url, {
         method: method,
@@ -207,7 +206,6 @@ const InventarioCombustible = () => {
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       }
       
-      console.log(`Respuesta de ${isEditing ? "actualización" : "creación"}:`, responseText);
       
       // Mostrar mensaje de éxito con toast
       isEditing 
@@ -244,18 +242,34 @@ const InventarioCombustible = () => {
     if (!result.isConfirmed) return;
     
     try {
-      console.log("Eliminando tanque:", id);
       
       const res = await fetch(`${API_URL}/tanques/${id}`, {
         method: "DELETE",
       });
       
       if (!res.ok) {
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar tanque",
+            estado: "fallido",
+          }),
+        });
         const errorText = await res.text();
         console.error("Error response:", errorText);
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       }
-      
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar tanque",
+            estado: "exitoso",
+          }),
+        });
       showToast("success", "Tanque eliminado con éxito");
       fetchTanques(); // Recargar tanques después de eliminar
     } catch (err) {

@@ -11,6 +11,7 @@ import {
 const Proveedores = () => {
   const [proveedores, setProveedores] = useState([]);
   const [proveedorEditando, setProveedorEditando] = useState(null);
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
   useEffect(() => {
     fetchProveedores();
@@ -44,7 +45,49 @@ const Proveedores = () => {
       if (!res.ok) {
         const error = await res.json();
         showToast("error", "Error al guardar el proveedor");
+        if (esEdicion) {
+          fetch(`${API_URL}/bitacora/entrada`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              usuarioId,
+              acciones: "actualizar proveedor",
+              estado: "fallido",
+            }),
+          });
+        } else {
+          fetch(`${API_URL}/bitacora/entrada`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              usuarioId,
+              acciones: "crear proveedor",
+              estado: "fallido",
+            }),
+          });
+        }
         return;
+      }
+      if (esEdicion) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar proveedor",
+            estado: "exitoso",
+          }),
+        });
+      } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear proveedor",
+            estado: "exitoso",
+          }),
+        });
       }
       esEdicion
         ? showToast("success", "Proveedor actualizado con éxito")
@@ -71,9 +114,27 @@ const Proveedores = () => {
       });
 
       if (res.status === 204) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar proveedor",
+            estado: "exitoso",
+          }),
+        });
         await mostrarExito("El proveedor ha sido eliminado.");
         setProveedores((prev) => prev.filter((p) => p.id !== id));
       } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar proveedor",
+            estado: "fallido",
+          }),
+        });
         const err = await res.json();
         mostrarError(err.message);
       }
@@ -89,69 +150,85 @@ const Proveedores = () => {
   };
 
   return (
-  <div className="p-8 text-[#f1f1f1]">
-    <h2 className="text-[1.8rem] mb-6 text-[#00d1b2] font-bold">Gestión de Proveedores</h2>
+    <div className="p-8 text-[#f1f1f1]">
+      <h2 className="text-[1.8rem] mb-6 text-[#00d1b2] font-bold">
+        Gestión de Proveedores
+      </h2>
 
-    <div className="flex justify-start mb-4">
-      <button
-        className="bg-[#00d1b2] text-black px-5 py-2 rounded-lg font-bold hover:bg-[#00bfa4] transition"
-        onClick={() => setProveedorEditando({})}
-      >
-        + Crear proveedor
-      </button>
-    </div>
+      <div className="flex justify-start mb-4">
+        <button
+          className="bg-[#00d1b2] text-black px-5 py-2 rounded-lg font-bold hover:bg-[#00bfa4] transition"
+          onClick={() => setProveedorEditando({})}
+        >
+          + Crear proveedor
+        </button>
+      </div>
 
-    <div className="overflow-x-auto rounded-xl shadow-md bg-[#2a2a2a]">
-      <table className="w-full min-w-[800px] border-collapse">
-        <thead className="bg-[#1c1c1c]">
-          <tr>
-            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Nombre</th>
-            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Teléfono</th>
-            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Correo</th>
-            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Dirección</th>
-            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">NIT</th>
-            <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {proveedores.map((p) => (
-            <tr key={p.id} className="hover:bg-[#1f1f1f] transition">
-              <td className="px-4 py-3 border-b border-[#444]">{p.nombre}</td>
-              <td className="px-4 py-3 border-b border-[#444]">{p.telefono}</td>
-              <td className="px-4 py-3 border-b border-[#444]">{p.correo}</td>
-              <td className="px-4 py-3 border-b border-[#444]">{p.direccion}</td>
-              <td className="px-4 py-3 border-b border-[#444]">{p.nit}</td>
-              <td className="px-4 py-3 border-b border-[#444]">
-                <button
-                  className="bg-[#00d1b2] text-black px-3 py-1 rounded-md mr-2 text-sm hover:bg-[#00bfa4] transition"
-                  onClick={() => setProveedorEditando(p)}
-                >
-                  Editar
-                </button>
-                <button
-                  className="bg-[#ff5c5c] text-white px-3 py-1 rounded-md text-sm hover:bg-[#e04848] transition"
-                  onClick={() => handleDelete(p.id)}
-                >
-                  Eliminar
-                </button>
-              </td>
+      <div className="overflow-x-auto rounded-xl shadow-md bg-[#2a2a2a]">
+        <table className="w-full min-w-[800px] border-collapse">
+          <thead className="bg-[#1c1c1c]">
+            <tr>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Nombre
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Teléfono
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Correo
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Dirección
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                NIT
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Acciones
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {proveedores.map((p) => (
+              <tr key={p.id} className="hover:bg-[#1f1f1f] transition">
+                <td className="px-4 py-3 border-b border-[#444]">{p.nombre}</td>
+                <td className="px-4 py-3 border-b border-[#444]">
+                  {p.telefono}
+                </td>
+                <td className="px-4 py-3 border-b border-[#444]">{p.correo}</td>
+                <td className="px-4 py-3 border-b border-[#444]">
+                  {p.direccion}
+                </td>
+                <td className="px-4 py-3 border-b border-[#444]">{p.nit}</td>
+                <td className="px-4 py-3 border-b border-[#444]">
+                  <button
+                    className="bg-[#00d1b2] text-black px-3 py-1 rounded-md mr-2 text-sm hover:bg-[#00bfa4] transition"
+                    onClick={() => setProveedorEditando(p)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="bg-[#ff5c5c] text-white px-3 py-1 rounded-md text-sm hover:bg-[#e04848] transition"
+                    onClick={() => handleDelete(p.id)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {proveedorEditando && (
+        <ModalProveedor
+          proveedorSeleccionado={proveedorEditando}
+          onClose={handleCloseModal}
+          onSubmit={handleGuardarProveedor}
+        />
+      )}
     </div>
-
-    {proveedorEditando && (
-      <ModalProveedor
-        proveedorSeleccionado={proveedorEditando}
-        onClose={handleCloseModal}
-        onSubmit={handleGuardarProveedor}
-      />
-    )}
-  </div>
-);
-
-
+  );
 };
 
 export default Proveedores;

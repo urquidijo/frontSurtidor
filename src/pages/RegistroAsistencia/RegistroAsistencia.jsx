@@ -63,6 +63,15 @@ const RegistroAsistencia = () => {
         body: JSON.stringify({ id_usuario: usuarioId }),
       });
       obtenerAsistencias();
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "marcar entrada",
+            estado: "exitoso",
+          }),
+        });
       showToast("success", "Asistencia marcada con éxito");
     } catch (err) {
       console.error("Error al marcar entrada:", err);
@@ -77,6 +86,15 @@ const RegistroAsistencia = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_usuario: usuarioId }),
       });
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "marcar salida",
+            estado: "exitoso",
+          }),
+        });
       showToast("success", "Salida marcada con éxito");
       obtenerAsistencias();
     } catch (err) {

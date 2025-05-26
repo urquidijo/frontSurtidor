@@ -74,9 +74,27 @@ const Perfil = () => {
       const data = await res.json();
       if (res.ok) {
         setUsuario(data);
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar perfil",
+            estado: "exitoso",
+          }),
+        });
         showToast("success", "Perfil actualizado con éxito");
         setEditando(false);
       } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar perfil",
+            estado: "fallido",
+          }),
+        });
         showToast("error", "Error al actualizar perfil");
       }
     } catch (error) {
