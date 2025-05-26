@@ -50,8 +50,6 @@ const InventarioCombustible = () => {
           // Guardamos los permisos y el rol del usuario
           setPermisos(data.permisos.map((p) => p.nombre));
           setRolUsuario(data.rol || "");
-          console.log("Rol del usuario:", data.rol);
-          console.log("Permisos del usuario:", data.permisos.map(p => p.nombre));
         })
         .catch((err) => console.error("Error al cargar permisos:", err));
     }
@@ -65,7 +63,6 @@ const InventarioCombustible = () => {
         return;
       }
 
-      console.log("Fetching tanques from:", `${API_URL}/tanques?id_sucursal=${sucursalId}`);
       const res = await fetch(`${API_URL}/tanques?id_sucursal=${sucursalId}`);
       
       if (!res.ok) {
@@ -182,7 +179,6 @@ const InventarioCombustible = () => {
         id_sucursal: sucursalId // Aseguramos que se use el ID de la sucursal actual
       };
       
-      console.log(`${isEditing ? "Actualizando" : "Creando"} tanque:`, body);
       
       const url = isEditing 
         ? `${API_URL}/tanques/${currentTanqueId}` 
@@ -202,11 +198,52 @@ const InventarioCombustible = () => {
       const responseText = await res.text();
       
       if (!res.ok) {
+        if(isEditing){
+          fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar tanque",
+            estado: "fallido",
+          }),
+        });
+        }else{
+          fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear tanque",
+            estado: "fallido",
+          }),
+        });
+        }
         console.error("Error response:", responseText);
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       }
       
-      
+      if(isEditing){
+          fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar tanque",
+            estado: "exitoso",
+          }),
+        });
+        }else{
+          fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear tanque",
+            estado: "exitoso",
+          }),
+        });
+        }
       // Mostrar mensaje de éxito con toast
       isEditing 
         ? showToast("success", "Tanque actualizado con éxito")

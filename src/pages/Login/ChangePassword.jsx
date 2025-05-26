@@ -78,49 +78,52 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="change-wrapper">
-      <div className="change-form">
-        <h2 className="change-title">Cambiar contraseña</h2>
-        <p className="change-subtitle">Ingresa y confirma tu nueva contraseña</p>
+  <div className="min-h-screen flex items-center justify-center bg-[#121212] px-4">
+    <div className="w-full max-w-md bg-[#1f1f1f] rounded-xl shadow-lg p-8 border border-[#2a2a2a]">
+      <h2 className="text-2xl font-bold text-[#00d1b2] mb-2 text-center">Cambiar contraseña</h2>
+      <p className="text-sm text-gray-400 text-center mb-6">Ingresa y confirma tu nueva contraseña</p>
 
-        <div className="input-group">
-          <label>Nueva contraseña</label>
-          <div className="input-icon">
-            <input
-              name="password"
-              type="password"
-              placeholder="Nueva contraseña"
-              onChange={handleChange}
-              value={form.password}
-            />
-          </div>
-          {errors.password && <span className="error">{errors.password}</span>}
-        </div>
-
-        <div className="input-group">
-          <label>Confirmar contraseña</label>
-          <div className="input-icon">
-            <input
-              name="confirm"
-              type="password"
-              placeholder="Confirmar contraseña"
-              onChange={handleChange}
-              value={form.confirm}
-            />
-          </div>
-          {errors.confirm && <span className="error">{errors.confirm}</span>}
-        </div>
-
-        <button
-          className="change-button"
-          onClick={handleSubmit}
-          disabled={!isValid}
-        >
-          Guardar
-        </button>
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-300 mb-1">Nueva contraseña</label>
+        <input
+          name="password"
+          type="password"
+          placeholder="Nueva contraseña"
+          onChange={handleChange}
+          value={form.password}
+          className="w-full px-4 py-2 bg-[#2a2a2a] text-white rounded-lg border border-[#3a3a3a] focus:outline-none focus:ring-2 focus:ring-[#00d1b2]"
+        />
+        {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
       </div>
+
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-300 mb-1">Confirmar contraseña</label>
+        <input
+          name="confirm"
+          type="password"
+          placeholder="Confirmar contraseña"
+          onChange={handleChange}
+          value={form.confirm}
+          className="w-full px-4 py-2 bg-[#2a2a2a] text-white rounded-lg border border-[#3a3a3a] focus:outline-none focus:ring-2 focus:ring-[#00d1b2]"
+        />
+        {errors.confirm && <span className="text-red-500 text-xs">{errors.confirm}</span>}
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        disabled={!isValid}
+        className={`w-full py-2 rounded-lg font-semibold transition ${
+          isValid
+            ? "bg-[#00d1b2] hover:bg-[#00b39a] text-white"
+            : "bg-gray-600 cursor-not-allowed text-gray-300"
+        }`}
+      >
+        Guardar
+      </button>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default ChangePassword;

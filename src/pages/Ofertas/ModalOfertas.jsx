@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { showToast } from "../../utils/toastUtils";
+import API_URL from "../../config/config";
 
 const ModalOferta = ({
   ofertaSeleccionada,
@@ -8,6 +9,7 @@ const ModalOferta = ({
   onActualizar,
 }) => {
   const esEdicion = !!ofertaSeleccionada?.id;
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -42,6 +44,28 @@ const ModalOferta = ({
         "warning",
         "El porcentaje debe ser mayor a 0 y menor o igual a 100."
       );
+      if (esEdicion) {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "actualizar descuento",
+            estado: "fallido",
+          }),
+        });
+      } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "crear descuento",
+            estado: "fallido",
+          }),
+        });
+      }
+
       return;
     }
     if (esEdicion) {
