@@ -8,31 +8,22 @@ const Success = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const yaFacturado = localStorage.getItem('factura_generada');
-    const ventanaActiva = localStorage.getItem('ventana_proceso_abierta');
-
-    if (ventanaActiva === 'true' || yaFacturado === 'true') {
-      console.log('Otra ventana ya está procesando...');
-      setStatus('success');
-      return;
-    }
 
     localStorage.setItem('ventana_proceso_abierta', 'true');
 
     const registrarFactura = async () => {
       const codigo = 'NV002';
-      const monto_pagado = localStorage.getItem('monto_pagado') ;
-      const monto_por_cobrar = 0;
-      const monto_cambio = '0';
+      const monto_pagado = parseFloat(localStorage.getItem('monto_pagado'));
+      const monto_por_cobrar = parseFloat(localStorage.getItem('monto_por_cobrar'))
+      const monto_cambio = 0;
 
       const hora = new Date().toLocaleTimeString('it-IT');
       const created_at = new Date().toISOString();
 
       const id_sucursal = sessionStorage.getItem('sucursalId');
       const id_usuario = sessionStorage.getItem('usuarioId');
-      const id_dispensador = localStorage.getItem('id_dispensador') || "26451b02-a209-437b-bd56-089d8a77c4a4";
+      const id_dispensador = localStorage.getItem('id_dispensador');
       const id_cliente = localStorage.getItem('id_cliente');
-
       if (!monto_pagado || !id_sucursal || !id_usuario || !id_cliente) {
         toast.error('Faltan datos para generar la factura');
         setStatus('error');
@@ -45,16 +36,16 @@ const Success = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            codigo,
-            monto_pagado: String(monto_pagado), // asegurar que sea string
-            monto_por_cobrar,
-            monto_cambio: String(monto_cambio), // asegurar que sea string
-            hora,
-            created_at,
-            id_sucursal,
-            id_usuario,
-            id_dispensador,
-            id_cliente,
+            codigo:codigo,
+            monto_pagado: monto_pagado, 
+            monto_por_cobrar: monto_por_cobrar,
+            monto_cambio: monto_cambio,
+            hora:hora,
+            created_at:created_at,
+            id_sucursal: id_sucursal,
+            id_usuario: id_usuario,
+            id_dispensador: id_dispensador,
+            id_cliente: id_cliente,
           }),
         });
 
@@ -102,6 +93,9 @@ const Success = () => {
           localStorage.removeItem('factura_generada');
           localStorage.removeItem('ventana_proceso_abierta');
           localStorage.removeItem('monto_pagado');
+          localStorage.removeItem('monto_por_cobrar');
+          localStorage.removeItem('id_dispensador');
+          localStorage.removeItem('id_cliente');
           navigate('/ventas');
         }}
       >
