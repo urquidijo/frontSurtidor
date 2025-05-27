@@ -14,6 +14,7 @@ import Ofertas from "../pages/Ofertas/Ofertas.jsx";
 import ChangePassword from "../pages/Login/ChangePassword.jsx";
 import InventarioCombustible from "../pages/InventarioCombustible/InventarioCombustible.jsx";
 import Bitacora from "../pages/Bitacora/Bitacora.jsx";
+import Success from "../pages/Ventas/Success.jsx";
 import Dispensadores from "../pages/Dispensadores/Dispensadores.jsx";
 
 const Router = () => {
@@ -22,6 +23,7 @@ const Router = () => {
       <Route path="/" element={<Login />} />
       <Route path="/change-password/:token" element={<ChangePassword />} />
       {/* Rutas protegidas */}
+      
       <Route element={<PrivateRoutes />}>
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
@@ -35,7 +37,6 @@ const Router = () => {
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/asistencias" element={<RegistroAsistencia />} />
           <Route path="/ofertas" element={<Ofertas />} />
-          <Route path="/dispensadores" element={<Dispensadores/>}/>
           
         </Route>
       </Route>
