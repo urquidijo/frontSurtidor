@@ -12,14 +12,9 @@ const Bitacora = () => {
   }, []);
 
   const formatFecha = (fecha) => {
-    if (!fecha) return "—";
-    const date = new Date(fecha);
-    return date.toLocaleDateString("es-BO", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
+  if (!fecha) return "—";
+  return fecha.split("T")[0].split("-").reverse().join("/");
+};
 
   return (
     <div className="p-8 text-[#f1f1f1]">
