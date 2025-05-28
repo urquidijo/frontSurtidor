@@ -14,6 +14,8 @@ const Dispensadores = () => {
   const [sucursal, setSucursal] = useState(null);
   const [dispensadores, setDispensadores] = useState([]);
   const [permisos, setPermisos] = useState([]);
+  const [tanques, setTanques] = useState([]);
+  
 
   const [openModalManguera, setOpenModalManguera] = useState(false);
   const [modoModalManguera, setModoModalManguera] = useState("crear");
@@ -29,6 +31,7 @@ const Dispensadores = () => {
     ubicacion: "",
     capacidad_maxima: "",
     estado: "Activo",
+    id_tanque: "",
   });
   const [dispensadorSeleccionado, setDispensadorSeleccionado] = useState("");
 
@@ -39,6 +42,13 @@ const Dispensadores = () => {
         .then((res) => res.json())
         .then((data) => setPermisos(data.permisos.map((p) => p.nombre)))
         .catch((err) => console.error("Error al cargar permisos:", err));
+        const sucursalId = sessionStorage.getItem("sucursalId");
+  if (sucursalId) {
+    fetch(`${API_URL}/tanques?id_sucursal=${sucursalId}`)
+      .then((res) => res.json())
+      .then((data) => setTanques(data))
+      .catch((err) => console.error("Error al obtener tanques:", err));
+  }
     }
 
     const sucursalData = {
@@ -136,26 +146,26 @@ const Dispensadores = () => {
         }),
       });
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "crear dispensador",
-            estado: "exitoso",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "crear dispensador",
+          estado: "exitoso",
+        }),
+      });
       showToast("success", "Dispensador creado con éxito");
       cargarDispensadoresConMangueras(sucursal.id);
     } catch (error) {
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "crear dispensador",
-            estado: "fallido",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "crear dispensador",
+          estado: "fallido",
+        }),
+      });
       console.error("Error creando dispensador:", error);
       showToast("error", "Dispensador creado sin éxito");
     }
@@ -174,27 +184,27 @@ const Dispensadores = () => {
         }),
       });
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "actualizar dispensador",
-            estado: "exitoso",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "actualizar dispensador",
+          estado: "exitoso",
+        }),
+      });
       showToast("success", "Dispensador actualizado con éxito");
       cargarDispensadoresConMangueras(sucursal.id);
       setOpenModal(false);
     } catch (error) {
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "actualizar dispensador",
-            estado: "fallido",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "actualizar dispensador",
+          estado: "fallido",
+        }),
+      });
       console.error("Error actualizando dispensador:", error);
       showToast("error", "Dispensador actualizado sin éxito");
     }
@@ -218,27 +228,27 @@ const Dispensadores = () => {
         body: JSON.stringify(nuevaManguera),
       });
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "crear manguera",
-            estado: "exitoso",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "crear manguera",
+          estado: "exitoso",
+        }),
+      });
       showToast("success", "Manguera creda con éxito");
       cargarDispensadoresConMangueras(sucursal.id);
       setOpenModalManguera(false);
     } catch (error) {
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "crear manguera",
-            estado: "fallido",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "crear manguera",
+          estado: "fallido",
+        }),
+      });
       console.error("Error creando manguera:", error);
       showToast("error", "Manguera creada sin éxito");
     }
@@ -254,14 +264,14 @@ const Dispensadores = () => {
         body: JSON.stringify(nuevaManguera),
       });
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "editar manguera",
-            estado: "exitoso",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "editar manguera",
+          estado: "exitoso",
+        }),
+      });
       showToast("success", "Manguera actualizada con éxito");
       cargarDispensadoresConMangueras(sucursal.id);
       setOpenModalManguera(false);
@@ -329,20 +339,22 @@ const Dispensadores = () => {
       ubicacion: dispensador.ubicacion,
       capacidad_maxima: dispensador.capacidad_maxima,
       estado: dispensador.estado,
+      id_tanque: dispensador.id_tanque, 
     });
     setDispensadorSeleccionado(dispensador); // ← asignamos el dispensador actual
     setOpenModal(true);
   };
 
   return (
-
     <main className="max-w-7xl mx-auto">
       {permisos.includes("ver_dashboard") && (
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-semibold text-[#00d1b2]">Dispensadores de Combustible</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#00d1b2]">
+              Dispensadores de Combustible
+            </h2>
             <button
-              className="bg-[#00d1b2] text-white px-5 py-2 rounded-lg hover:bg-[#00a89c] transition-all duration-200 shadow-md"
+              className="bg-[#00d1b2] text-white px-5 py-2 rounded-lg hover:bg-[#00a89c] transition-all duration-200 shadow-md w-full sm:w-auto"
               onClick={handleAbrirModalCrear}
             >
               ➕ Nuevo Dispensador
@@ -352,12 +364,24 @@ const Dispensadores = () => {
           {dispensadores.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {dispensadores.map((disp, idx) => (
-                <div key={idx} className="bg-[#2a2a2a] rounded-xl shadow-lg p-5 border border-[#444]">
+                <div
+                  key={idx}
+                  className="bg-[#2a2a2a] rounded-xl shadow-lg p-5 border border-[#444]"
+                >
                   <h3 className="text-xl font-semibold text-white mb-2">
-                    Ubicación: <span className="text-[#ccc]">{disp.ubicacion}</span>
+                    Ubicación:{" "}
+                    <span className="text-[#ccc]">{disp.ubicacion}</span>
                   </h3>
-                  <p><span className="font-semibold text-[#ccc]">Estado:</span> {disp.estado}</p>
-                  <p><span className="font-semibold text-[#ccc]">Capacidad máxima:</span> {disp.capacidad_maxima} m³</p>
+                  <p>
+                    <span className="font-semibold text-[#ccc]">Estado:</span>{" "}
+                    {disp.estado}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-[#ccc]">
+                      Capacidad máxima:
+                    </span>{" "}
+                    {disp.capacidad_maxima} m³
+                  </p>
 
                   <div className="mt-4 space-y-2">
                     <button
@@ -375,7 +399,10 @@ const Dispensadores = () => {
                     <button
                       onClick={() => {
                         setModoModalManguera("crear");
-                        setNuevaManguera({ esta_activo: true, id_dispensador: disp.id });
+                        setNuevaManguera({
+                          esta_activo: true,
+                          id_dispensador: disp.id,
+                        });
                         setOpenModalManguera(true);
                       }}
                       className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200"
@@ -393,7 +420,8 @@ const Dispensadores = () => {
                           className="flex items-center justify-between bg-[#2a2a2a] p-2 rounded-lg"
                         >
                           <span>
-                            {manguera.esta_activo ? "✅" : "❌"} Manguera {manguera.id.slice(0, 8)}
+                            {manguera.esta_activo ? "✅" : "❌"} Manguera{" "}
+                            {manguera.id.slice(0, 8)}
                           </span>
                           <div className="flex space-x-3 text-sm">
                             <button
@@ -403,7 +431,9 @@ const Dispensadores = () => {
                               Editar
                             </button>
                             <button
-                              onClick={() => handleEliminarManguera(manguera.id)}
+                              onClick={() =>
+                                handleEliminarManguera(manguera.id)
+                              }
                               className="text-red-400 hover:underline"
                             >
                               Eliminar
@@ -413,7 +443,9 @@ const Dispensadores = () => {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-400 mt-2 text-sm">Sin mangueras registradas.</p>
+                    <p className="text-gray-400 mt-2 text-sm">
+                      Sin mangueras registradas.
+                    </p>
                   )}
                 </div>
               ))}
@@ -426,7 +458,7 @@ const Dispensadores = () => {
         </section>
       )}
 
-    <ModalDispensador
+      <ModalDispensador
         open={openModal}
         onClose={() => setOpenModal(false)}
         modo={modoModal}
@@ -437,6 +469,7 @@ const Dispensadores = () => {
         onCrear={handleCrearDispensador}
         onActualizar={handleActualizarDispensador}
         dispensadores={dispensadores}
+        tanques={tanques} 
       />
       <ModalManguera
         open={openModalManguera}
@@ -447,8 +480,8 @@ const Dispensadores = () => {
         onCrear={handleCrearManguera}
         onActualizar={handleActualizarManguera}
       />
-      </main>
-);
+    </main>
+  );
 };
 
 export default Dispensadores;

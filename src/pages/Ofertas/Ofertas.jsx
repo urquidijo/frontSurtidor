@@ -97,14 +97,14 @@ const Ofertas = () => {
         return;
       }
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "crear descuento",
-            estado: "exitoso",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "crear descuento",
+          estado: "exitoso",
+        }),
+      });
       showToast("success", "Descuento creado con éxito");
       handleCloseModal();
     } catch (error) {
@@ -137,14 +137,14 @@ const Ofertas = () => {
         return;
       }
       fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "actualizar descuento",
-            estado: "exitoso",
-          }),
-        });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "actualizar descuento",
+          estado: "exitoso",
+        }),
+      });
       showToast("success", "Descueto actualizado con éxito");
       handleCloseModal();
     } catch (error) {
@@ -208,18 +208,20 @@ const Ofertas = () => {
                   {o.esta_activo ? "Sí" : "No"}
                 </td>
                 <td className="px-4 py-3 border-b border-[#444]">
-                  <button
-                    className="bg-[#00d1b2] text-black px-3 py-1 rounded-md mr-2 text-sm hover:bg-[#00bfa4] transition"
-                    onClick={() => setOfertaEditando(o)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="bg-[#ff5c5c] text-white px-3 py-1 rounded-md text-sm hover:bg-[#e04848] transition"
-                    onClick={() => handleDelete(o.id)}
-                  >
-                    Eliminar
-                  </button>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 w-full">
+                    <button
+                      className="flex-1 min-w-[100px] bg-[#00d1b2] text-black px-2 py-1.5 rounded-md text-sm font-semibold hover:bg-[#00bfa4] transition"
+                      onClick={() => setOfertaEditando(o)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="flex-1 min-w-[100px] bg-[#ff5c5c] text-white px-2 py-1.5 rounded-md text-sm font-semibold hover:bg-[#e04848] transition"
+                      onClick={() => handleDelete(o.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

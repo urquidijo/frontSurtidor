@@ -15,15 +15,15 @@ const Layout = () => {
 
   const handleLogOut = () => {
     const usuarioId = sessionStorage.getItem("usuarioId");
-      fetch(`${API_URL}/bitacora/entrada`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            usuarioId,
-            acciones: "logOut",
-            estado: "exitoso",
-          }),
-        });
+    fetch(`${API_URL}/bitacora/entrada`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        usuarioId,
+        acciones: "logOut",
+        estado: "exitoso",
+      }),
+    });
     sessionStorage.clear();
     navigate("/");
   };
@@ -52,7 +52,7 @@ const Layout = () => {
     <div className="flex h-screen overflow-hidden bg-[#1e1e1e] text-[#f1f1f1] font-sans">
       {/* Botón Toggle en móviles */}
       <button
-        className="fixed top-4 left-4 z-50 bg-[#00d1b2] text-black rounded-lg px-5 py-3 text-lg md:hidden shadow-lg hover:scale-110 transition-transform"
+        className="fixed top-3 left-3 z-50 bg-[#00d1b2cc] text-black rounded-md px-3 py-2 text-base md:hidden shadow-md hover:bg-[#00d1b2] transition-all"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         ☰

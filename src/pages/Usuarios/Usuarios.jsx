@@ -150,18 +150,20 @@ const Usuarios = () => {
                   {usuario.rol}
                 </td>
                 <td className="px-4 py-3 border-b border-[#444]">
-                  <button
-                    className="bg-[#00d1b2] text-black px-3 py-1 rounded-md mr-2 text-sm hover:bg-[#00bfa4] transition"
-                    onClick={() => setUsuarioEditando(usuario)}
-                  >
-                    Permisos
-                  </button>
-                  <button
-                    className="bg-[#ff5c5c] text-white px-3 py-1 rounded-md text-sm hover:bg-[#e04848] transition"
-                    onClick={() => handleDelete(usuario.ci)}
-                  >
-                    Eliminar
-                  </button>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 w-full">
+                    <button
+                      className="flex-1 min-w-[100px] bg-[#00d1b2] text-black px-2 py-1.5 rounded-md text-sm font-semibold hover:bg-[#00bfa4] transition"
+                      onClick={() => setUsuarioEditando(usuario)}
+                    >
+                      Permisos
+                    </button>
+                    <button
+                      className="flex-1 min-w-[100px] bg-[#ff5c5c] text-white px-2 py-1.5 rounded-md text-sm font-semibold hover:bg-[#e04848] transition"
+                      onClick={() => handleDelete(usuario.ci)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

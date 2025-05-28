@@ -13,6 +13,7 @@ const Ventas = () => {
   const [nuevo, setNuevo] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [status, setStatus] = useState("loading");
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
   const [formulario, setFormulario] = useState({
     nombre: "",
@@ -79,6 +80,15 @@ const Ventas = () => {
       });
 
       if (!res.ok) throw new Error("Error en el registro");
+      fetch(`${API_URL}/bitacora/entrada`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usuarioId,
+          acciones: "registrar cliente",
+          estado: "exitoso",
+        }),
+      });
       const data = await res.json();
       setCliente(data);
       localStorage.setItem("id_cliente", data.id);
@@ -137,9 +147,9 @@ const Ventas = () => {
       toast.error("Monto pagado inválido");
       return;
     }
-    if(montoPagado<montoPorCobrar){
-       toast.info("el monto pagado es menor al monto por cobrar"); 
-       return;
+    if (montoPagado < montoPorCobrar) {
+      toast.info("el monto pagado es menor al monto por cobrar");
+      return;
     }
 
     if (!formulario.id_dispensador) {
@@ -193,9 +203,27 @@ const Ventas = () => {
       if (res.ok && data?.ok) {
         localStorage.setItem("factura_generada", "true");
         setStatus("success");
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "generar factura",
+            estado: "exitoso",
+          }),
+        });
         toast.success("✅ Factura generada exitosamente");
         cancelar(); // <- acá se resetea todo
       } else {
+        fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "generar factura",
+            estado: "fallido",
+          }),
+        });
         setStatus("error");
         toast.error(data?.msg || "❌ Error al registrar factura");
       }

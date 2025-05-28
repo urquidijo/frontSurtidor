@@ -7,6 +7,7 @@ const ModalDispensador = ({
   setDispensadorSeleccionado,
   onCrear,
   onActualizar,
+  tanques,
 }) => {
   if (!open) return null;
 
@@ -16,12 +17,17 @@ const ModalDispensador = ({
       ubicacion: "",
       capacidad_maxima: "",
       estado: "Activo",
+      id_tanque: "",
     });
     setDispensadorSeleccionado("");
   };
 
   const handleConfirmar = async () => {
     try {
+      if (!nuevoDispensador.id_tanque) {
+      alert("Por favor, seleccione un tanque.");
+      return;
+    }
       if (modo === "crear") {
         await onCrear();
       } else if (modo === "editar") {
@@ -69,6 +75,23 @@ const ModalDispensador = ({
             }
             className="w-full max-w-[380px] px-5 py-3 rounded-xl bg-[#2c2c2c] text-[#f0f0f0] placeholder-[#888] focus:outline-none focus:ring-2 focus:ring-[#00d1b2] transition-all duration-300 shadow-sm"
           />
+          <select
+            value={nuevoDispensador.id_tanque || ""}
+            onChange={(e) =>
+              setNuevoDispensador({
+                ...nuevoDispensador,
+                id_tanque: e.target.value,
+              })
+            }
+            className="w-full max-w-[380px] px-5 py-3 rounded-xl bg-[#2c2c2c] text-[#f0f0f0] focus:outline-none focus:ring-2 focus:ring-[#00d1b2] transition-all duration-300 shadow-sm"
+          >
+            <option value="">Seleccione un tanque</option>
+            {tanques.map((tanque) => (
+              <option key={tanque.id} value={tanque.id}>
+                {tanque.nombre || `Tanque ${tanque.id}`}
+              </option>
+            ))}
+          </select>
 
           <select
             value={nuevoDispensador.estado}
