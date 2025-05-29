@@ -112,10 +112,12 @@ const Perfil = () => {
   if (!usuario) return <p>Cargando perfil...</p>;
 
   return (
-  <div className="p-8 text-[#f1f1f1]">
-    <h2 className="text-2xl mb-6 text-[#00d1b2] font-bold border-b border-[#444] pb-2">Mi Perfil</h2>
+  <div className="p-4 sm:p-6 md:p-8 text-[#f1f1f1]">
+    <h2 className="text-2xl mb-6 text-[#00d1b2] font-bold border-b border-[#444] pb-2">
+      Mi Perfil
+    </h2>
 
-    <div className="grid gap-5 bg-[#2a2a2a] p-6 rounded-xl shadow-lg max-w-2xl">
+    <div className="grid gap-5 bg-[#2a2a2a] p-6 rounded-xl shadow-lg w-full max-w-screen-md mx-auto sm:grid-cols-2">
       {[
         { label: "Nombre", name: "nombre", type: "text", disabled: true },
         { label: "Correo", name: "correo", type: "email", disabled: !editando },
@@ -124,7 +126,7 @@ const Perfil = () => {
         { label: "Domicilio", name: "domicilio", type: "text", disabled: !editando },
         { label: "CI", name: "ci", type: "text", disabled: true }
       ].map((field) => (
-        <label key={field.name} className="flex flex-col gap-1 text-sm">
+        <label key={field.name} className="flex flex-col gap-1 text-sm col-span-full sm:col-span-1">
           <span className="text-[#00d1b2] font-medium">{field.label}:</span>
           {field.type === "select" ? (
             <select
@@ -157,19 +159,19 @@ const Perfil = () => {
       ))}
     </div>
 
-    <div className="flex gap-4 mt-6">
+    <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full max-w-screen-md mx-auto">
       {editando ? (
         <>
           <button
             onClick={handleGuardar}
             disabled={isDisabled}
-            className="flex items-center gap-2 bg-[#00d1b2] text-black px-5 py-2 rounded-md font-semibold hover:bg-[#00bfa4] disabled:opacity-50 transition"
+            className="flex items-center justify-center gap-2 bg-[#00d1b2] text-black px-5 py-2 rounded-md font-semibold hover:bg-[#00bfa4] disabled:opacity-50 transition w-full sm:w-auto"
           >
             <Save size={16} /> Guardar
           </button>
           <button
             onClick={handleCancelar}
-            className="flex items-center gap-2 bg-gray-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-gray-500 transition"
+            className="flex items-center justify-center gap-2 bg-gray-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-gray-500 transition w-full sm:w-auto"
           >
             <X size={16} /> Cancelar
           </button>
@@ -177,7 +179,7 @@ const Perfil = () => {
       ) : (
         <button
           onClick={() => setEditando(true)}
-          className="flex items-center gap-2 bg-[#00d1b2] text-black px-5 py-2 rounded-md font-semibold hover:bg-[#00bfa4] transition"
+          className="flex items-center justify-center gap-2 bg-[#00d1b2] text-black px-5 py-2 rounded-md font-semibold hover:bg-[#00bfa4] transition w-full sm:w-auto"
         >
           <Pencil size={16} /> Editar Perfil
         </button>

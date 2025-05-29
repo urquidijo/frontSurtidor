@@ -94,21 +94,28 @@ const Success = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-xl font-bold mb-4">Resultado del Pago</h1>
-      {status === "loading" && <p>Verificando pago...</p>}
+  <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-[#1f1f1f] text-white">
+    <div className="w-full max-w-md bg-[#2a2a2a] p-6 rounded-lg shadow-lg text-center">
+      <h1 className="text-2xl font-bold mb-4 text-[#00d1b2]">Resultado del Pago</h1>
+
+      {status === "loading" && (
+        <p className="text-gray-300">Verificando pago...</p>
+      )}
+
       {status === "success" && (
-        <div className="text-green-600 font-semibold">
+        <div className="text-green-400 font-semibold">
           ✅ ¡Pago exitoso y factura generada!
         </div>
       )}
+
       {status === "error" && (
-        <div className="text-red-600 font-semibold">
+        <div className="text-red-400 font-semibold">
           ❌ Hubo un problema al registrar tu factura.
         </div>
       )}
+
       <button
-        className="mt-6 px-4 py-2 bg-blue-600 text-white rounded"
+        className="mt-6 w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
         onClick={() => {
           localStorage.removeItem("factura_generada");
           localStorage.removeItem("ventana_proceso_abierta");
@@ -122,7 +129,9 @@ const Success = () => {
         Volver a ventas
       </button>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Success;

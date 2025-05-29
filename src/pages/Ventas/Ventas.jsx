@@ -267,155 +267,161 @@ const Ventas = () => {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-[#1f1f1f] rounded-lg shadow-lg border border-[#333] text-white">
-      <h2 className="text-2xl font-bold mb-4 text-[#00d1b2]">
-        Registrar Venta
-      </h2>
+  <div className="p-4 sm:p-6 max-w-xl w-full mx-auto bg-[#1f1f1f] rounded-lg shadow-lg border border-[#333] text-white">
+    <h2 className="text-2xl font-bold mb-4 text-[#00d1b2] text-center sm:text-left">
+      Registrar Venta
+    </h2>
 
-      <div className="mb-4 flex items-center space-x-2">
+    <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0">
+      <input
+        type="text"
+        placeholder="Ingresar placa"
+        value={placa}
+        onChange={(e) => setPlaca(e.target.value.toUpperCase())}
+        className="bg-[#2a2a2a] border border-[#444] text-white p-2 rounded w-full"
+      />
+      <button
+        onClick={buscarCliente}
+        className="bg-[#00d1b2] text-white px-4 py-2 rounded hover:bg-[#00a89c] disabled:opacity-50 w-full sm:w-auto"
+        disabled={cargando}
+      >
+        {cargando ? "Buscando..." : "Buscar"}
+      </button>
+    </div>
+
+    {(cliente || nuevo) && (
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
         <input
           type="text"
-          placeholder="Ingresar placa"
-          value={placa}
-          onChange={(e) => setPlaca(e.target.value.toUpperCase())}
-          className="bg-[#2a2a2a] border border-[#444] text-white p-2 flex-1 rounded"
+          placeholder="Nombre"
+          value={formulario.nombre}
+          onChange={(e) =>
+            setFormulario({ ...formulario, nombre: e.target.value })
+          }
+          className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
+          disabled={!nuevo}
         />
-        <button
-          onClick={buscarCliente}
-          className="bg-[#00d1b2] text-white px-4 py-2 rounded hover:bg-[#00a89c] disabled:opacity-50"
-          disabled={cargando}
-        >
-          {cargando ? "Buscando..." : "Buscar"}
-        </button>
-      </div>
+        <input
+          type="text"
+          placeholder="NIT"
+          value={formulario.nit}
+          onChange={(e) =>
+            setFormulario({ ...formulario, nit: e.target.value })
+          }
+          className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
+          disabled={!nuevo}
+        />
 
-      {(cliente || nuevo) && (
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={formulario.nombre}
+        {!nuevo && (
+          <select
+            value={formulario.id_dispensador}
             onChange={(e) =>
-              setFormulario({ ...formulario, nombre: e.target.value })
+              setFormulario({ ...formulario, id_dispensador: e.target.value })
             }
             className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
-            disabled={!nuevo}
-          />
-          <input
-            type="text"
-            placeholder="NIT"
-            value={formulario.nit}
-            onChange={(e) =>
-              setFormulario({ ...formulario, nit: e.target.value })
-            }
-            className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
-            disabled={!nuevo}
-          />
+          >
+            <option value="">Selecciona un dispensador</option>
+            {dispensadores.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.ubicacion || `Dispensador ${d.id}`}
+              </option>
+            ))}
+          </select>
+        )}
 
-          {!nuevo && (
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            checked={formulario.b_sisa}
+            onChange={(e) =>
+              setFormulario({ ...formulario, b_sisa: e.target.checked })
+            }
+            disabled={!nuevo}
+            className="accent-[#00d1b2]"
+          />
+          <label className="ml-2 text-gray-300">Tiene B-SISA</label>
+        </div>
+
+        {!nuevo && (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <label className="text-gray-300 sm:w-1/3">Método de pago:</label>
             <select
-              value={formulario.id_dispensador}
-              onChange={(e) =>
-                setFormulario({ ...formulario, id_dispensador: e.target.value })
-              }
-              className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
+              value={metodoPago}
+              onChange={(e) => setMetodoPago(e.target.value)}
+              className="bg-[#2a2a2a] border border-[#444] text-white p-2 rounded w-full sm:w-2/3"
             >
-              <option value="">Selecciona un dispensador</option>
-              {dispensadores.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.ubicacion || `Dispensador ${d.id}`}
-                </option>
-              ))}
+              <option value="tarjeta">Tarjeta</option>
+              <option value="efectivo">Efectivo</option>
             </select>
-          )}
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              checked={formulario.b_sisa}
-              onChange={(e) =>
-                setFormulario({ ...formulario, b_sisa: e.target.checked })
-              }
-              disabled={!nuevo}
-              className="accent-[#00d1b2]"
-            />
-            <label className="ml-2 text-gray-300">Tiene B-SISA</label>
           </div>
+        )}
 
-          {!nuevo && (
-            <div className="flex items-center justify-between gap-4 mb-2">
-              <label className="text-gray-300">Método de pago:</label>
-              <select
-                value={metodoPago}
-                onChange={(e) => setMetodoPago(e.target.value)}
-                className="bg-[#2a2a2a] border border-[#444] text-white p-2 rounded w-full"
-              >
-                <option value="tarjeta">Tarjeta</option>
-                <option value="efectivo">Efectivo</option>
-              </select>
-            </div>
-          )}
-          {nuevo ? (
-            <button
-              type="button"
-              onClick={registrarCliente}
-              className="bg-[#00d1b2] text-white px-4 py-2 rounded w-full hover:bg-[#00a89c] disabled:opacity-50"
-              disabled={cargando}
-            >
-              Registrar Cliente
-            </button>
-          ) : (
-            <>
-              <input
-                type="number"
-                placeholder="Monto a cobrar (USD)"
-                value={montoPorCobrar}
-                onChange={handleMontoChange}
-                className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
-              />
-
-              <input
-                type="number"
-                placeholder="Monto pagado (USD)"
-                value={metodoPago === "tarjeta" ? montoPorCobrar : montoPagado}
-                onChange={
-                  metodoPago === "tarjeta" ? undefined : handleMontoPagadoChange
-                }
-                className={`bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded ${
-                  metodoPago === "tarjeta"
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-                disabled={metodoPago === "tarjeta"}
-              />
-
-              <button
-                type="button"
-                onClick={
-                  metodoPago === "tarjeta" ? pagarConTarjeta : pagarEnEfectivo
-                }
-                className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700 disabled:opacity-50"
-                disabled={cargando || !montoPorCobrar}
-              >
-                {metodoPago === "tarjeta"
-                  ? "Pagar con Tarjeta"
-                  : "Registrar Pago en Efectivo"}
-              </button>
-            </>
-          )}
-
+        {nuevo ? (
           <button
             type="button"
-            onClick={cancelar}
-            className="bg-gray-600 text-white px-4 py-2 rounded w-full hover:bg-gray-700"
+            onClick={registrarCliente}
+            className="bg-[#00d1b2] text-white px-4 py-2 rounded w-full hover:bg-[#00a89c] disabled:opacity-50"
             disabled={cargando}
           >
-            Cancelar
+            Registrar Cliente
           </button>
-        </form>
-      )}
-    </div>
-  );
+        ) : (
+          <>
+            <input
+              type="number"
+              placeholder="Monto a cobrar (USD)"
+              value={montoPorCobrar}
+              onChange={handleMontoChange}
+              className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
+            />
+
+            <input
+              type="number"
+              placeholder="Monto pagado (USD)"
+              value={
+                metodoPago === "tarjeta" ? montoPorCobrar : montoPagado
+              }
+              onChange={
+                metodoPago === "tarjeta" ? undefined : handleMontoPagadoChange
+              }
+              className={`bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded ${
+                metodoPago === "tarjeta"
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+              disabled={metodoPago === "tarjeta"}
+            />
+
+            <button
+              type="button"
+              onClick={
+                metodoPago === "tarjeta"
+                  ? pagarConTarjeta
+                  : pagarEnEfectivo
+              }
+              className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700 disabled:opacity-50"
+              disabled={cargando || !montoPorCobrar}
+            >
+              {metodoPago === "tarjeta"
+                ? "Pagar con Tarjeta"
+                : "Registrar Pago en Efectivo"}
+            </button>
+          </>
+        )}
+
+        <button
+          type="button"
+          onClick={cancelar}
+          className="bg-gray-600 text-white px-4 py-2 rounded w-full hover:bg-gray-700"
+          disabled={cargando}
+        >
+          Cancelar
+        </button>
+      </form>
+    )}
+  </div>
+);
+
 };
 
 export default Ventas;
