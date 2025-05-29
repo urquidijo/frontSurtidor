@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { showToast } from "../../utils/toastUtils";
 import API_URL from "../../config/config";
 
 const Ventas = () => {
@@ -31,13 +30,13 @@ const Ventas = () => {
       fetch(`${API_URL}/dispensadores/sucursal/activos/${sucursalId}`)
         .then((res) => res.json())
         .then((data) => setDispensadores(data))
-        .catch(() => toast.error("Error al obtener dispensadores"));
+        .catch(() => showToast("error", "Error al obtener dispensadores"));
     }
   }, [sucursalId]);
 
   const buscarCliente = async () => {
     if (!placa.trim()) {
-      toast.warning("Ingresa una placa válida");
+      showToast("warning", "Ingresa una placa válida");
       return;
     }
 
@@ -53,12 +52,12 @@ const Ventas = () => {
         ...data,
       }));
       setNuevo(false);
-      toast.success("Cliente encontrado");
+      showToast("success", "Cliente encontrado");
     } catch {
       setCliente(null);
       localStorage.removeItem("id_cliente");
       setNuevo(true);
-      toast.info("Cliente no encontrado. Puedes registrarlo.");
+      showToast("info", "Cliente no encontrado. Puedes registrarlo.");
     } finally {
       setCargando(false);
     }
@@ -67,7 +66,7 @@ const Ventas = () => {
   const registrarCliente = async () => {
     const { nombre, nit, b_sisa } = formulario;
     if (!nombre || !nit || !placa) {
-      toast.error("Completa todos los campos");
+      showToast("error", "Completa todos los campos");
       return;
     }
 
@@ -93,9 +92,9 @@ const Ventas = () => {
       setCliente(data);
       localStorage.setItem("id_cliente", data.id);
       setNuevo(false);
-      toast.success("Cliente registrado correctamente");
+      showToast("success", "Cliente registrado correctamente");
     } catch {
-      toast.error("Error al registrar el cliente");
+      showToast("error", "Error al registrar el cliente");
     } finally {
       setCargando(false);
     }
@@ -107,11 +106,11 @@ const Ventas = () => {
       isNaN(montoPorCobrar) ||
       parseFloat(montoPorCobrar) <= 0
     ) {
-      toast.error("Ingresa un monto a cobrar válido en USD");
+      showToast("error", "Ingresa un monto a cobrar válido en USD");
       return;
     }
     if (!formulario.id_dispensador) {
-      toast.error("Debes seleccionar un dispensador antes de pagar");
+      showToast("error", "Debes seleccionar un dispensador antes de pagar");
       return;
     }
 
@@ -133,10 +132,10 @@ const Ventas = () => {
         localStorage.setItem("id_dispensador", formulario.id_dispensador);
         window.location.href = data.url;
       } else {
-        toast.error("No se pudo redirigir a Stripe");
+        showToast("error", "No se pudo redirigir a Stripe");   
       }
     } catch {
-      toast.error("Error al crear sesión de pago");
+       showToast("error", "Error al crear sesión de pago");
     } finally {
       setCargando(false);
     }
@@ -144,20 +143,14 @@ const Ventas = () => {
 
   const pagarEnEfectivo = async () => {
     if (!montoPagado || isNaN(montoPagado) || parseFloat(montoPagado) <= 0) {
-      toast.error("Monto pagado inválido");
+      showToast("error", "Monto pagado inválido");
       return;
     }
     if (montoPagado < montoPorCobrar) {
-      toast.info("el monto pagado es menor al monto por cobrar");
-      return;
-    }
-
-    if (!formulario.id_dispensador) {
-      toast.error("Debes seleccionar un dispensador antes de pagar");
+      showToast("info", "el monto pagado es menor al monto por cobrar");
       return;
     }
     localStorage.setItem("id_dispensador", formulario.id_dispensador);
-
     setCargando(true);
     const codigo = "NV002";
     const monto_pagado = parseFloat(localStorage.getItem("monto_pagado"));
@@ -174,7 +167,7 @@ const Ventas = () => {
     const id_dispensador = localStorage.getItem("id_dispensador");
     const id_cliente = localStorage.getItem("id_cliente");
     if (!monto_pagado || !id_sucursal || !id_usuario || !id_cliente) {
-      toast.error("Faltan datos para generar la factura");
+      showToast("error", "Faltan datos para generar la factura");
       setStatus("error");
       localStorage.removeItem("ventana_proceso_abierta");
       return;
@@ -212,7 +205,7 @@ const Ventas = () => {
             estado: "exitoso",
           }),
         });
-        toast.success("✅ Factura generada exitosamente");
+        showToast("success", "✅ Factura generada exitosamente");
         cancelar(); // <- acá se resetea todo
       } else {
         fetch(`${API_URL}/bitacora/entrada`, {
@@ -225,12 +218,12 @@ const Ventas = () => {
           }),
         });
         setStatus("error");
-        toast.error(data?.msg || "❌ Error al registrar factura");
+        showToast("error", data?.msg || "❌ Error al registrar factura");
       }
     } catch (error) {
       console.error("Error al registrar factura:", error);
       setStatus("error");
-      toast.error("❌ Error de red al registrar factura");
+      showToast("error", "❌ Error de red al registrar factura");
     }
   };
 

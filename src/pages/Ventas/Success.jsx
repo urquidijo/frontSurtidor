@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { showToast } from "../../utils/toastUtils";
 import API_URL from "../../config/config";
 
 const Success = () => {
@@ -27,7 +27,7 @@ const Success = () => {
       const id_dispensador = localStorage.getItem("id_dispensador");
       const id_cliente = localStorage.getItem("id_cliente");
       if (!monto_pagado || !id_sucursal || !id_usuario || !id_cliente) {
-        toast.error("Faltan datos para generar la factura");
+        showToast("error", "Faltan datos para generar la factura");
         setStatus("error");
         localStorage.removeItem("ventana_proceso_abierta");
         return;
@@ -65,10 +65,10 @@ const Success = () => {
             }),
           });
           setStatus("success");
-          toast.success("✅ Factura generada exitosamente");
+          showToast("success", "✅ Factura generada exitosamente");
         } else {
           setStatus("error");
-          toast.error(data?.msg || "❌ Error al registrar factura");
+          showToast("error", data?.msg || "❌ Error al registrar factura");
         }
       } catch (error) {
         fetch(`${API_URL}/bitacora/entrada`, {
@@ -82,7 +82,7 @@ const Success = () => {
         });
         console.error("Error al registrar factura:", error);
         setStatus("error");
-        toast.error("❌ Error de red al registrar factura");
+        showToast("error","❌ Error de red al registrar factura");
       }
     };
 
