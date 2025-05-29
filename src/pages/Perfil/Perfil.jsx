@@ -111,13 +111,13 @@ const Perfil = () => {
 
   if (!usuario) return <p>Cargando perfil...</p>;
 
-  return (
+return (
   <div className="p-4 sm:p-6 md:p-8 text-[#f1f1f1]">
     <h2 className="text-2xl mb-6 text-[#00d1b2] font-bold border-b border-[#444] pb-2">
       Mi Perfil
     </h2>
 
-    <div className="grid gap-5 bg-[#2a2a2a] p-6 rounded-xl shadow-lg w-full max-w-screen-md mx-auto sm:grid-cols-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 bg-[#2a2a2a] p-6 rounded-xl shadow-lg w-full max-w-screen-md mx-auto">
       {[
         { label: "Nombre", name: "nombre", type: "text", disabled: true },
         { label: "Correo", name: "correo", type: "email", disabled: !editando },
@@ -126,7 +126,10 @@ const Perfil = () => {
         { label: "Domicilio", name: "domicilio", type: "text", disabled: !editando },
         { label: "CI", name: "ci", type: "text", disabled: true }
       ].map((field) => (
-        <label key={field.name} className="flex flex-col gap-1 text-sm col-span-full sm:col-span-1">
+        <label
+          key={field.name}
+          className="flex flex-col gap-1 text-sm w-full"
+        >
           <span className="text-[#00d1b2] font-medium">{field.label}:</span>
           {field.type === "select" ? (
             <select
@@ -134,7 +137,7 @@ const Perfil = () => {
               value={usuario[field.name]}
               onChange={handleChange}
               disabled={field.disabled}
-              className="bg-[#1f1f1f] text-white px-4 py-2 rounded-md border border-[#444] disabled:opacity-60"
+              className="bg-[#1f1f1f] text-white px-4 py-2 rounded-md border border-[#444] w-full disabled:opacity-60"
             >
               <option value="">Selecciona tu sexo</option>
               <option value="M">Masculino</option>
@@ -149,7 +152,7 @@ const Perfil = () => {
               onChange={handleChange}
               onWheel={(e) => e.target.blur()}
               disabled={field.disabled}
-              className="bg-[#1f1f1f] text-white px-4 py-2 rounded-md border border-[#444] disabled:opacity-60"
+              className="bg-[#1f1f1f] text-white px-4 py-2 rounded-md border border-[#444] w-full disabled:opacity-60"
             />
           )}
           {errors[field.name] && (
