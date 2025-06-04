@@ -97,7 +97,7 @@ const ModalCreateUser = ({ onClose, onUserCreated }) => {
           body: JSON.stringify({
             usuarioId,
             acciones: "crear usuario",
-            estado: "exitoso",
+            estado: "fallido",
           }),
         });
         const data = await response.json();
@@ -112,7 +112,7 @@ const ModalCreateUser = ({ onClose, onUserCreated }) => {
           body: JSON.stringify({
             usuarioId,
             acciones: "crear usuario",
-            estado: "fallido",
+            estado: "exitoso",
           }),
         });
         onUserCreated();
