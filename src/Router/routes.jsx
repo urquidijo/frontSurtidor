@@ -18,6 +18,7 @@ import Success from "../pages/Ventas/Success.jsx";
 import Dispensadores from "../pages/Dispensadores/Dispensadores.jsx";
 import Sugerencias from "../pages/Sugerencias/Sugerencias.jsx";
 import OrdenesDeCompra from '../pages/OrdenesDeCompra/OrdenesDeCompra.jsx';
+import Modulos from '../pages/Modulos/Modulos.jsx';
 
 const Router = () => {
   return (
@@ -43,6 +44,7 @@ const Router = () => {
           <Route path="/success" element={<Success/>}/>
           <Route path="/quejas" element={<Sugerencias/>}/>
           <Route path="/ordenesCompra" element={<OrdenesDeCompra/>}/>
+          <Route path="/modulos" element={<Modulos/>}/>
         </Route>
       </Route>
     </Routes>

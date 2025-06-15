@@ -293,6 +293,18 @@ const Layout = () => {
               >
                 Quejas y sugerencias
               </li>
+              {permisos.includes("gestionar_modulo") && (
+                <li
+                  className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
+                    isActive("/modulos")
+                      ? "bg-[#2c9d8c] text-white"
+                      : "hover:bg-[#2c9d8c33]"
+                  }`}
+                  onClick={() => navigate("/modulos")}
+                >
+                  Modulos
+                </li>
+              )}
             </ul>
           )}
 
