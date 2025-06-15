@@ -19,12 +19,15 @@ import Dispensadores from "../pages/Dispensadores/Dispensadores.jsx";
 import Sugerencias from "../pages/Sugerencias/Sugerencias.jsx";
 import OrdenesDeCompra from '../pages/OrdenesDeCompra/OrdenesDeCompra.jsx';
 import Modulos from '../pages/Modulos/Modulos.jsx';
+import FormularioQuejas from "../pages/Sugerencias/FormularioQuejas.jsx";
 
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/change-password/:token" element={<ChangePassword />} />
+        {/* Ruta pública para quejas */}
+      <Route path="/quejas-publicas" element={<FormularioQuejas />} />
       {/* Rutas protegidas */}
       
       <Route element={<PrivateRoutes />}>
