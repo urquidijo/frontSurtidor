@@ -17,12 +17,15 @@ import Bitacora from "../pages/Bitacora/Bitacora.jsx";
 import Success from "../pages/Ventas/Success.jsx";
 import Dispensadores from "../pages/Dispensadores/Dispensadores.jsx";
 import Sugerencias from "../pages/Sugerencias/Sugerencias.jsx";
+import FormularioQuejas from "../pages/Sugerencias/FormularioQuejas.jsx";
 
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/change-password/:token" element={<ChangePassword />} />
+        {/* Ruta pública para quejas */}
+      <Route path="/quejas-publicas" element={<FormularioQuejas />} />
       {/* Rutas protegidas */}
       
       <Route element={<PrivateRoutes />}>

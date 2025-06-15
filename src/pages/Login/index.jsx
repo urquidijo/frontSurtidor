@@ -71,7 +71,7 @@ const Login = () => {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usuarioId, acciones: "logIn",estado: "exitoso", }),
+        body: JSON.stringify({ usuarioId, acciones: "logIn", estado: "exitoso", }),
       });
 
       const { sucursal } = data.usuario;
@@ -194,6 +194,12 @@ const Login = () => {
           onClick={() => setShowModal(true)}
         >
           ¿Olvidaste tu contraseña?
+        </p>
+        <p
+          className="mt-2 text-center text-slate-300 hover:text-cyan-400 cursor-pointer"
+          onClick={() => navigate("/quejas-publicas")}
+        >
+          ¿Quieres dejar una queja o sugerencia?
         </p>
       </form>
 
