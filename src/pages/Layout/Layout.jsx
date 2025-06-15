@@ -198,6 +198,7 @@ const Layout = () => {
           {(permisos.includes("gestionar_ventas") ||
             permisos.includes("gestionar_compras") ||
             permisos.includes("gestionar_proveedores") ||
+            permisos.includes("gestionar_ordenes_de_compra") ||
             permisos.includes("gestionar_ofertas")) && (
             <>
               <li
@@ -242,6 +243,18 @@ const Layout = () => {
                       onClick={() => navigate("/proveedores")}
                     >
                       Proveedores
+                    </li>
+                  )}
+                  {permisos.includes("gestionar_ordenes_de_compra") && (
+                    <li
+                      className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
+                        isActive("/ordenesCompra")
+                          ? "bg-[#2c9d8c] text-white"
+                          : "hover:bg-[#2c9d8c33]"
+                      }`}
+                      onClick={() => navigate("/ordenesCompra")}
+                    >
+                      Ordenes_de_compra
                     </li>
                   )}
                   {permisos.includes("gestionar_ofertas") && (
