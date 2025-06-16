@@ -20,6 +20,7 @@ import Sugerencias from "../pages/Sugerencias/Sugerencias.jsx";
 import OrdenesDeCompra from '../pages/OrdenesDeCompra/OrdenesDeCompra.jsx';
 import Modulos from '../pages/Modulos/Modulos.jsx';
 import FormularioQuejas from "../pages/Sugerencias/FormularioQuejas.jsx";
+import SalidaProductos from "../pages/SalidaProductos/SalidaProductos.jsx";
 
 const Router = () => {
   return (
@@ -48,6 +49,7 @@ const Router = () => {
           <Route path="/quejas" element={<Sugerencias/>}/>
           <Route path="/ordenesCompra" element={<OrdenesDeCompra/>}/>
           <Route path="/modulos" element={<Modulos/>}/>
+          <Route path="/salidaProductos" element={<SalidaProductos/>}/>
         </Route>
       </Route>
     </Routes>

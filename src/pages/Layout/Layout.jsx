@@ -141,6 +141,18 @@ const Layout = () => {
                   >
                     Inventario de productos
                   </li>
+                  {permisos.includes("gestionar_salida_productos") && (
+                    <li
+                      className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
+                        isActive("/salidaProductos")
+                          ? "bg-[#2c9d8c] text-white"
+                          : "hover:bg-[#2c9d8c33]"
+                      }`}
+                      onClick={() => navigate("/salidaProductos")}
+                    >
+                      salida de Productos
+                    </li>
+                  )}
                 </ul>
               )}
             </>
