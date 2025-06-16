@@ -212,7 +212,6 @@ const Layout = () => {
 
           {/* Gestión comercial */}
           {(permisos.includes("gestionar_ventas") ||
-            permisos.includes("gestionar_compras") ||
             permisos.includes("gestionar_proveedores") ||
             permisos.includes("gestionar_ordenes_de_compra") ||
             permisos.includes("gestionar_ofertas")) && (
@@ -236,17 +235,6 @@ const Layout = () => {
                         Ventas
                       </li>
                     )}
-                    {permisos.includes("gestionar_compras") && (
-                      <li
-                        className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/compras")
-                            ? "bg-[#2c9d8c] text-white"
-                            : "hover:bg-[#2c9d8c33]"
-                          }`}
-                        onClick={() => navigate("/compras")}
-                      >
-                        Compras
-                      </li>
-                    )}
                     {permisos.includes("gestionar_proveedores") && (
                       <li
                         className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/proveedores")
@@ -266,7 +254,7 @@ const Layout = () => {
                           }`}
                         onClick={() => navigate("/ordenesCompra")}
                       >
-                        Ordenes_de_compra
+                        Ordenes de compra
                       </li>
                     )}
                     {permisos.includes("gestionar_ofertas") && (

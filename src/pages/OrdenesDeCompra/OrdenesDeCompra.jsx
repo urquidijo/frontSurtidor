@@ -95,6 +95,7 @@ const OrdenesDeCompra = () => {
                 <th className="px-4 py-2 text-left whitespace-nowrap">Sucursal</th>
                 <th className="px-4 py-2 text-left whitespace-nowrap">Usuario</th>
                 <th className="px-4 py-2 text-left whitespace-nowrap">Monto Bs</th>
+                <th className="px-4 py-2 text-left whitespace-nowrap">Cantidad m3</th>
                 <th className="px-4 py-2 text-left whitespace-nowrap">Estado</th>
                 <th className="px-4 py-2 text-left whitespace-nowrap">Acciones</th>
               </tr>
@@ -126,6 +127,7 @@ const OrdenesDeCompra = () => {
                         minimumFractionDigits: 2
                       })}
                     </td>
+                    <td className="px-4 py-2">{orden.cantidad}</td>
                     <td className="px-4 py-2">
                       <span className={`px-2 py-1 rounded text-sm font-semibold
                         ${
