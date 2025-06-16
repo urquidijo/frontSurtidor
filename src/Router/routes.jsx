@@ -21,16 +21,17 @@ import OrdenesDeCompra from '../pages/OrdenesDeCompra/OrdenesDeCompra.jsx';
 import Modulos from '../pages/Modulos/Modulos.jsx';
 import FormularioQuejas from "../pages/Sugerencias/FormularioQuejas.jsx";
 import SalidaProductos from "../pages/SalidaProductos/SalidaProductos.jsx";
+import GestionSucursales from "../pages/GestionSucursales/GestionSucursales.jsx";
 
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/change-password/:token" element={<ChangePassword />} />
-        {/* Ruta pública para quejas */}
+      {/* Ruta pública para quejas */}
       <Route path="/quejas-publicas" element={<FormularioQuejas />} />
       {/* Rutas protegidas */}
-      
+
       <Route element={<PrivateRoutes />}>
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
@@ -50,6 +51,12 @@ const Router = () => {
           <Route path="/ordenesCompra" element={<OrdenesDeCompra/>}/>
           <Route path="/modulos" element={<Modulos/>}/>
           <Route path="/salidaProductos" element={<SalidaProductos/>}/>
+          <Route path="/dispensadores" element={<Dispensadores />} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/quejas" element={<Sugerencias />} />
+          <Route path="/ordenesCompra" element={<OrdenesDeCompra />} />
+          <Route path="/modulos" element={<Modulos />} />
+          <Route path="/sucursales" element={<GestionSucursales />} />
         </Route>
       </Route>
     </Routes>
