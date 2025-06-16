@@ -12,6 +12,7 @@ const Layout = () => {
   const [operacionesOpen, setOperacionesOpen] = useState(false);
   const [comercialOpen, setComercialOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
+  const [sucursalModulos, setSucursalModulos] = useState([]);
 
   const handleLogOut = () => {
     const usuarioId = sessionStorage.getItem("usuarioId");
@@ -30,6 +31,7 @@ const Layout = () => {
 
   useEffect(() => {
     const usuarioId = sessionStorage.getItem("usuarioId");
+    const sucursalId = sessionStorage.getItem("sucursalId");
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setSidebarOpen(true); // Restablecer el sidebar si se agranda la pantalla
@@ -42,8 +44,32 @@ const Layout = () => {
         .then((res) => res.json())
         .then((data) => setPermisos(data.permisos.map((p) => p.nombre)))
         .catch((err) => console.error("Error al cargar permisos:", err));
+
+      if (sucursalId) {
+        fetch(`${API_URL}/sucursal/${sucursalId}/modulos`)
+          .then((res) => res.json())
+          .then((data) => setSucursalModulos(data.map((m) => m.nombre)))
+          .catch((err) => console.error("Error al cargar módulos de la sucursal:", err));
+      }
     }
-    return () => window.removeEventListener("resize", handleResize);
+
+    // Escuchar el evento de actualización de módulos de sucursal
+    const handleSucursalModulesUpdate = () => {
+      const currentSucursalId = sessionStorage.getItem("sucursalId");
+      if (currentSucursalId) {
+        fetch(`${API_URL}/sucursal/${currentSucursalId}/modulos`)
+          .then((res) => res.json())
+          .then((data) => setSucursalModulos(data.map((m) => m.nombre)))
+          .catch((err) => console.error("Error al recargar módulos de la sucursal:", err));
+      }
+    };
+
+    window.addEventListener('sucursalModulesUpdated', handleSucursalModulesUpdate);
+
+    return () => {
+      window.removeEventListener('sucursalModulesUpdated', handleSucursalModulesUpdate);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const isActive = (path) => location.pathname === path;
@@ -83,7 +109,7 @@ const Layout = () => {
           )}
 
           {/* Seguridad y acceso */}
-          {permisos.includes("gestionar_usuarios") && (
+          {permisos.includes("gestionar_usuarios") && sucursalModulos.includes("Gestión de seguridad y acceso") && (
             <>
               <li
                 className="font-semibold cursor-pointer px-3 py-2 rounded-lg hover:bg-[#2c9d8c33] transition-all"
@@ -111,7 +137,7 @@ const Layout = () => {
           )}
 
           {/* Inventario */}
-          {
+          {sucursalModulos.includes("Gestión de inventarios y productos") && (
             <>
               <li
                 className="font-semibold cursor-pointer px-3 py-2 rounded-lg hover:bg-[#2c9d8c33] transition-all"
@@ -144,17 +170,19 @@ const Layout = () => {
                 </ul>
               )}
             </>
-          }
+          )}
 
           {/* Operaciones */}
-          <li
-            className="font-bold cursor-pointer px-4 py-3 rounded-lg hover:bg-[#2c9d8c33] transition-all"
-            onClick={() => setOperacionesOpen(!operacionesOpen)}
-          >
-            Operaciones ▾
-          </li>
+          {sucursalModulos.includes("Gestión de operaciones") && (
+            <li
+              className="font-bold cursor-pointer px-4 py-3 rounded-lg hover:bg-[#2c9d8c33] transition-all"
+              onClick={() => setOperacionesOpen(!operacionesOpen)}
+            >
+              Operaciones ▾
+            </li>
+          )}
 
-          {operacionesOpen && (
+          {operacionesOpen && sucursalModulos.includes("Gestión de operaciones") && (
             <ul className="pl-5 border-l-4 border-[#00ffaa66] space-y-2">
               <li
                 className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
@@ -199,7 +227,7 @@ const Layout = () => {
             permisos.includes("gestionar_compras") ||
             permisos.includes("gestionar_proveedores") ||
             permisos.includes("gestionar_ordenes_de_compra") ||
-            permisos.includes("gestionar_ofertas")) && (
+            permisos.includes("gestionar_ofertas")) && sucursalModulos.includes("Gestión comercial") && (
             <>
               <li
                 className="font-bold cursor-pointer px-4 py-3 rounded-lg hover:bg-[#2c9d8c33] transition-all"
@@ -275,13 +303,15 @@ const Layout = () => {
           )}
 
           {/* Administración */}
-          <li
-            className="font-bold cursor-pointer px-4 py-3 rounded-lg hover:bg-[#2c9d8c33] transition-all"
-            onClick={() => setAdminOpen(!adminOpen)}
-          >
-            Reportes ▾
-          </li>
-          {adminOpen && (
+          {sucursalModulos.includes("Gestión de administración y reportes") && (
+            <li
+              className="font-bold cursor-pointer px-4 py-3 rounded-lg hover:bg-[#2c9d8c33] transition-all"
+              onClick={() => setAdminOpen(!adminOpen)}
+            >
+              Reportes ▾
+            </li>
+          )}
+          {adminOpen && sucursalModulos.includes("Gestión de administración y reportes") && (
             <ul className="pl-5 border-l-4 border-[#00ffaa66] space-y-2">
               <li
                 className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
@@ -298,7 +328,7 @@ const Layout = () => {
                   className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
                     isActive("/modulos")
                       ? "bg-[#2c9d8c] text-white"
-                      : "hover:bg-[#2c9d8c33]"
+                    : "hover:bg-[#2c9d8c33]"
                   }`}
                   onClick={() => navigate("/modulos")}
                 >
