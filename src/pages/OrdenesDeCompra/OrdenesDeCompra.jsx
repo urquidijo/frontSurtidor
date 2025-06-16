@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import ModalCrearOrden from "./ModalCrearOrden";
 import { showToast } from "../../utils/toastUtils";
 import API_URL from "../../config/config";
+import {
+  mostrarConfirmacion,
+  mostrarExito,
+  mostrarError,
+} from "../../utils/alertUtils";
 
 const OrdenesDeCompra = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -24,6 +29,13 @@ const OrdenesDeCompra = () => {
   };
 
   const handleEliminar = async (id) => {
+    const result = await mostrarConfirmacion({
+          titulo: "¿Eliminar orden de compra?",
+          texto: "Esta acción no se puede deshacer.",
+          confirmText: "Sí, eliminar",
+        });
+    
+        if (!result.isConfirmed) return;
     try {
       await fetch(`${API_URL}/ordenes-compra/${id}`, { method: "DELETE" });
       fetch(`${API_URL}/bitacora/entrada`, {
@@ -35,11 +47,11 @@ const OrdenesDeCompra = () => {
           estado: "exitoso",
         }),
       });
-      showToast("error", "Orden eliminada exitosamente");
+      await mostrarExito("La orden de compra ha sido eliminada.");
       fetchOrdenes();
     } catch (error) {
-      console.error("Error al eliminar orden:", error);
-      showToast("error", "Error al eliminar la orden");
+      console.error("Error al eliminar la orden:", error);
+      mostrarError(error);
     }
   };
 

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import API_URL from "../../config/config";
+import {
+  mostrarConfirmacion,
+  mostrarExito,
+  mostrarError,
+} from "../../utils/alertUtils";
 
 const HistorialVentas = () => {
   const [ventas, setVentas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("fecha");
+  const usuarioId = sessionStorage.getItem("usuarioId");
 
   const fetchHistorialVentas = async () => {
     try {
@@ -22,16 +28,31 @@ const HistorialVentas = () => {
   };
 
   const deleteVenta = async (id) => {
-    if (!confirm("¿Seguro que deseas eliminar esta venta?")) return;
+    const result = await mostrarConfirmacion({
+      titulo: "¿Eliminar orden de compra?",
+      texto: "Esta acción no se puede deshacer.",
+      confirmText: "Sí, eliminar",
+    });
+
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(`${API_URL}/historial-ventas/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Error al eliminar venta");
-      toast.success("Venta eliminada");
+      fetch(`${API_URL}/bitacora/entrada`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            usuarioId,
+            acciones: "eliminar venta",
+            estado: "exitoso",
+          }),
+        });
+      await mostrarExito("La venta ha sido eliminada.");
       setVentas(ventas.filter((venta) => venta.id !== id));
     } catch (error) {
-      toast.error(error.message);
+      mostrarError(error);
     }
   };
 
@@ -44,7 +65,8 @@ const HistorialVentas = () => {
       v.cliente_nombre.toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortBy === "fecha") return new Date(b.created_at) - new Date(a.created_at);
+      if (sortBy === "fecha")
+        return new Date(b.created_at) - new Date(a.created_at);
       if (sortBy === "monto") return b.monto_por_cobrar - a.monto_por_cobrar;
       return 0;
     });
@@ -75,9 +97,13 @@ const HistorialVentas = () => {
         </div>
 
         {loading ? (
-          <div className="text-center text-[#ccc] py-8">Cargando historial...</div>
+          <div className="text-center text-[#ccc] py-8">
+            Cargando historial...
+          </div>
         ) : ventasFiltradas.length === 0 ? (
-          <div className="text-center text-[#ccc] py-8">No hay ventas registradas.</div>
+          <div className="text-center text-[#ccc] py-8">
+            No hay ventas registradas.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left">
