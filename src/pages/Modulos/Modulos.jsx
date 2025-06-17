@@ -23,6 +23,7 @@ const Modulos = () => {
   const [modulos, setModulos] = useState([]); // todos los módulos
   const [modulosSucursal, setModulosSucursal] = useState([]); // ids de módulos asignados
   const [sucursales, setSucursales] = useState([]);
+  const usuarioId = sessionStorage.getItem("usuarioId");
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState(
     () => sessionStorage.getItem("sucursalId") || ""
   );
