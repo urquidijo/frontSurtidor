@@ -1,23 +1,79 @@
 import { useEffect, useState } from "react";
 import API_URL from "../../config/config";
+import Filtros from "../../utils/Filtros.jsx";
 
 const Bitacora = () => {
   const [bitacora, setBitacora] = useState([]);
 
+  const [filtrosActivos, setFiltrosActivos] = useState({});
+  const [valoresFiltro, setValoresFiltro] = useState({});
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
   useEffect(() => {
-    fetch(`${API_URL}/bitacora`)
-      .then((res) => res.json())
-      .then((data) => setBitacora(data))
-      .catch((err) => console.error(err));
-  }, []);
+    fetchBitacora();
+  }, [filtrosActivos]);
+
+  const fetchBitacora = async () => {
+    try {
+      const query = new URLSearchParams(filtrosActivos).toString();
+      const res = await fetch(`${API_URL}/bitacora?${query}`);
+      const data = await res.json();
+      setBitacora(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const aplicarFiltros = () => {
+    setFiltrosActivos(valoresFiltro); // Triggea el useEffect
+  };
 
   const formatFecha = (fecha) => {
-  if (!fecha) return "—";
-  return fecha.split("T")[0].split("-").reverse().join("/");
-};
+    if (!fecha) return "—";
+    return fecha.split("T")[0].split("-").reverse().join("/");
+  };
 
   return (
     <div className="p-8 text-[#f1f1f1]">
+      <div className="flex flex-wrap gap-4 mb-4">
+        <button
+          onClick={() => {
+            if (mostrarFiltros) {
+              // Al cerrar los filtros, limpiar filtros activos y valores
+              setFiltrosActivos({});
+              setValoresFiltro({});
+            }
+            setMostrarFiltros(!mostrarFiltros);
+          }}
+          className="bg-[#444] text-white px-4 py-2 rounded hover:bg-[#555]"
+        >
+          {mostrarFiltros ? "Ocultar filtros" : "Filtrar"}
+        </button>
+        {mostrarFiltros && (
+          <button
+            onClick={aplicarFiltros}
+            className="bg-[#00d1b2] text-black px-4 py-2 rounded hover:bg-[#00bfa4] font-semibold"
+          >
+            Buscar
+          </button>
+        )}
+      </div>
+
+      {mostrarFiltros && (
+        <Filtros
+          filtros={[
+            { campo: "nombre", label: "Usuario" },
+            { campo: "fecha_entrada", label: "Fecha", tipo: "date" },
+            {
+              campo: "estado",
+              label: "Estado",
+              tipo: "select",
+              opciones: ["exitoso", "fallido"],
+            },
+          ]}
+          onChange={setValoresFiltro}
+        />
+      )}
+
       <h2 className="text-[1.8rem] mb-6 text-[#00d1b2] font-bold">
         Gestión de Bitácora
       </h2>
