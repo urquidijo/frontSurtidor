@@ -7,6 +7,11 @@ import {
   mostrarExito,
   mostrarError,
 } from "../../utils/alertUtils";
+import Filtros from "../../utils/Filtros.jsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const OrdenesDeCompra = () => {
   const [ordenes, setOrdenes] = useState([]);
@@ -14,28 +19,36 @@ const OrdenesDeCompra = () => {
   const [ordenAEditar, setOrdenAEditar] = useState(null);
   const usuarioId = sessionStorage.getItem("usuarioId");
 
+  const [filtrosActivos, setFiltrosActivos] = useState({});
+  const [valoresFiltro, setValoresFiltro] = useState({});
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
   useEffect(() => {
     fetchOrdenes();
-  }, []);
+  }, [filtrosActivos]);
 
   const fetchOrdenes = async () => {
     try {
-      const res = await fetch(`${API_URL}/ordenes-compra`);
+      const query = new URLSearchParams(filtrosActivos).toString();
+      const res = await fetch(`${API_URL}/ordenes-compra?${query}`);
       const data = await res.json();
       setOrdenes(data);
     } catch (error) {
       console.error("Error al obtener órdenes:", error);
     }
   };
+  const aplicarFiltros = () => {
+    setFiltrosActivos(valoresFiltro); // Triggea el useEffect
+  };
 
   const handleEliminar = async (id) => {
     const result = await mostrarConfirmacion({
-          titulo: "¿Eliminar orden de compra?",
-          texto: "Esta acción no se puede deshacer.",
-          confirmText: "Sí, eliminar",
-        });
-    
-        if (!result.isConfirmed) return;
+      titulo: "¿Eliminar orden de compra?",
+      texto: "Esta acción no se puede deshacer.",
+      confirmText: "Sí, eliminar",
+    });
+
+    if (!result.isConfirmed) return;
     try {
       await fetch(`${API_URL}/ordenes-compra/${id}`, { method: "DELETE" });
       fetch(`${API_URL}/bitacora/entrada`, {
@@ -113,9 +126,125 @@ const OrdenesDeCompra = () => {
     }
   };
 
+  // Generar PDF
+  const generarReportePDF = () => {
+    const doc = new jsPDF();
+    doc.text("Reporte de Ventas", 14, 20);
+
+    const tableColumn = [
+      "Fecha",
+      "Proveedor",
+      "Sucursal",
+      "Usuario",
+      "Monto BS",
+      "Cantidad m3",
+      "Estado",
+    ];
+    const tableRows = [];
+
+    ordenes.forEach((compra) => {
+      const compraData = [
+        new Date(compra.created_at).toLocaleDateString(),
+        compra.proveedor,
+        compra.sucursal,
+        compra.usuario,
+        compra.monto_total,
+        compra.cantidad,
+        compra.estado,
+      ];
+      tableRows.push(compraData);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+    });
+
+    doc.save("reporte_orden_compra.pdf");
+  };
+
+  // Generar Excel
+  const generarReporteExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      ordenes.map((compra) => ({
+        Fecha: new Date(compra.created_at).toLocaleDateString(),
+        Proveedor: compra.proveedor,
+        Sucursal: compra.sucursal,
+        Usuario: compra.usuario,
+        Monto_total: compra.monto_total,
+        Cantidad: compra.cantidad,
+        Estado: compra.estado,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ordenCompra");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "reporte_Orden_compra.xlsx");
+  };
+
   return (
     <div className="bg-[#1e1e1e] min-h-screen p-4 sm:p-8 text-white">
       <div className="bg-[#2c2c2c] p-4 sm:p-6 rounded-lg shadow">
+        <div className="flex flex-wrap gap-4 mb-4">
+          <button
+            onClick={generarReportePDF}
+            className="bg-[#3273dc] text-white px-4 py-2 rounded hover:bg-[#275aa8]"
+          >
+            📄 Exportar PDF
+          </button>
+
+          <button
+            onClick={generarReporteExcel}
+            className="bg-[#23d160] text-white px-4 py-2 rounded hover:bg-[#1bb24f]"
+          >
+            📊 Exportar Excel
+          </button>
+          <button
+            onClick={() => {
+              if (mostrarFiltros) {
+                // Al cerrar los filtros, limpiar filtros activos y valores
+                setFiltrosActivos({});
+                setValoresFiltro({});
+              }
+              setMostrarFiltros(!mostrarFiltros);
+            }}
+            className="bg-[#444] text-white px-4 py-2 rounded hover:bg-[#555]"
+          >
+            {mostrarFiltros ? "Ocultar filtros" : "Filtrar"}
+          </button>
+          {mostrarFiltros && (
+            <button
+              onClick={aplicarFiltros}
+              className="bg-[#00d1b2] text-black px-4 py-2 rounded hover:bg-[#00bfa4] font-semibold"
+            >
+              Buscar
+            </button>
+          )}
+        </div>
+
+        {mostrarFiltros && (
+          <Filtros
+            filtros={[
+              { campo: "nombre", label: "Usuario" },
+              { campo: "fecha_entrada", label: "Fecha", tipo: "date" },
+              {
+                campo: "estado",
+                label: "Estado",
+                tipo: "select",
+                opciones: ["finalizado", "pendiente", "cancelado"],
+              },
+            ]}
+            onChange={setValoresFiltro}
+          />
+        )}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
           <h1 className="text-2xl font-bold text-teal-400">
             Órdenes de Compra
