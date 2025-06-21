@@ -47,7 +47,6 @@ const Login = () => {
     try {
       const res = await fetch(`${API_URL}`, {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(objData),
       });
@@ -69,7 +68,6 @@ const Login = () => {
       const usuarioId = sessionStorage.getItem("usuarioId");
       fetch(`${API_URL}/bitacora/entrada`, {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuarioId, acciones: "logIn", estado: "exitoso", }),
       });
