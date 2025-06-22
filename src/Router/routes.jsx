@@ -22,6 +22,7 @@ import Modulos from '../pages/Modulos/Modulos.jsx';
 import FormularioQuejas from "../pages/Sugerencias/FormularioQuejas.jsx";
 import SalidaProductos from "../pages/SalidaProductos/SalidaProductos.jsx";
 import GestionSucursales from "../pages/GestionSucursales/GestionSucursales.jsx";
+import AlertasInventario from "../pages/AlertasInventario/AlertasInventario.jsx";
 
 const Router = () => {
   return (
@@ -57,6 +58,7 @@ const Router = () => {
           <Route path="/ordenesCompra" element={<OrdenesDeCompra />} />
           <Route path="/modulos" element={<Modulos />} />
           <Route path="/sucursales" element={<GestionSucursales />} />
+           <Route path="/alertas-inventario" element={<AlertasInventario />} />
         </Route>
       </Route>
     </Routes>

@@ -1,7 +1,7 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API_URL from "../../config/config";
-
+import NotificacionesGlobales from "../NotificacionesGlobales/NotificacionesGlobales";
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -85,20 +85,22 @@ const Layout = () => {
       </button>
 
       {/* Sidebar */}
+
       <aside
         className={` custom-scrollbar fixed top-0 bottom-0 left-0 z-40 flex flex-col w-64 bg-[#111]/90 backdrop-blur-lg p-7 border-r border-[#333] rounded-r-2xl overflow-y-auto transition-transform duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
           }`}
       >
-        <h2 className="text-[#00d1b2] text-[2rem] font-bold mb-8 text-center">
-          Octano
+        <h2 className="text-[#00d1b2] text-[2rem] font-bold mb-8 text-center flex items-center justify-between">
+          <span>Octano</span>
+          <NotificacionesGlobales />
         </h2>
 
         <ul className="space-y-2 flex-1 text-[0.95rem]">
           {permisos.includes("ver_dashboard") && (
             <li
               className={`cursor-pointer px-3 py-2 rounded-lg transition-all duration-200 ${isActive("/home")
-                  ? "bg-[#2c9d8c] text-white font-semibold"
-                  : "hover:bg-[#2c9d8c33]"
+                ? "bg-[#2c9d8c] text-white font-semibold"
+                : "hover:bg-[#2c9d8c33]"
                 }`}
               onClick={() => navigate("/home")}
             >
@@ -120,8 +122,8 @@ const Layout = () => {
                   {permisos.includes("gestionar_usuarios") && (
                     <li
                       className={`cursor-pointer px-2 py-1 rounded transition ${isActive("/usuarios")
-                          ? "bg-[#2c9d8c] text-white"
-                          : "hover:bg-[#2c9d8c33]"
+                        ? "bg-[#2c9d8c] text-white"
+                        : "hover:bg-[#2c9d8c33]"
                         }`}
                       onClick={() => navigate("/usuarios")}
                     >
@@ -146,8 +148,8 @@ const Layout = () => {
                 <ul className="pl-3 border-l-2 border-[#00ffaa66] space-y-1">
                   <li
                     className={`cursor-pointer px-2 py-1 rounded transition ${isActive("/inventario/combustible")
-                        ? "bg-[#2c9d8c] text-white"
-                        : "hover:bg-[#2c9d8c33]"
+                      ? "bg-[#2c9d8c] text-white"
+                      : "hover:bg-[#2c9d8c33]"
                       }`}
                     onClick={() => navigate("/inventario/combustible")}
                   >
@@ -155,8 +157,8 @@ const Layout = () => {
                   </li>
                   <li
                     className={`cursor-pointer px-2 py-1 rounded transition ${isActive("/inventario/productos")
-                        ? "bg-[#2c9d8c] text-white"
-                        : "hover:bg-[#2c9d8c33]"
+                      ? "bg-[#2c9d8c] text-white"
+                      : "hover:bg-[#2c9d8c33]"
                       }`}
                     onClick={() => navigate("/inventario/productos")}
                   >
@@ -164,14 +166,24 @@ const Layout = () => {
                   </li>
                   {permisos.includes("gestionar_salida_productos") && (
                     <li
-                      className={`cursor-pointer px-3 py-2 rounded-md transition-all ${
-                        isActive("/salidaProductos")
-                          ? "bg-[#2c9d8c] text-white"
-                          : "hover:bg-[#2c9d8c33]"
-                      }`}
+                      className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/salidaProductos")
+                        ? "bg-[#2c9d8c] text-white"
+                        : "hover:bg-[#2c9d8c33]"
+                        }`}
                       onClick={() => navigate("/salidaProductos")}
                     >
                       salida de Productos
+                    </li>
+                  )}
+                  {permisos.includes("gestionar_usuarios") && (
+                    <li
+                      className={`cursor-pointer px-2 py-1 rounded transition ${isActive("/alertas-inventario")
+                        ? "bg-[#2c9d8c] text-white"
+                        : "hover:bg-[#2c9d8c33]"
+                        }`}
+                      onClick={() => navigate("/alertas-inventario")}
+                    >
+                      Alertas de Inventario
                     </li>
                   )}
                 </ul>
@@ -193,8 +205,8 @@ const Layout = () => {
             <ul className="pl-5 border-l-4 border-[#00ffaa66] space-y-2">
               <li
                 className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/asistencias")
-                    ? "bg-[#2c9d8c] text-white"
-                    : "hover:bg-[#2c9d8c33]"
+                  ? "bg-[#2c9d8c] text-white"
+                  : "hover:bg-[#2c9d8c33]"
                   }`}
                 onClick={() => navigate("/asistencias")}
               >
@@ -204,8 +216,8 @@ const Layout = () => {
               {permisos.includes("ver_bitacora") && (
                 <li
                   className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/bitacora")
-                      ? "bg-[#2c9d8c] text-white"
-                      : "hover:bg-[#2c9d8c33]"
+                    ? "bg-[#2c9d8c] text-white"
+                    : "hover:bg-[#2c9d8c33]"
                     }`}
                   onClick={() => navigate("/bitacora")}
                 >
@@ -215,8 +227,8 @@ const Layout = () => {
               {permisos.includes("gestionar_dispensadores") && (
                 <li
                   className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/dispensadores")
-                      ? "bg-[#2c9d8c] text-white"
-                      : "hover:bg-[#2c9d8c33]"
+                    ? "bg-[#2c9d8c] text-white"
+                    : "hover:bg-[#2c9d8c33]"
                     }`}
                   onClick={() => navigate("/dispensadores")}
                 >
@@ -226,8 +238,8 @@ const Layout = () => {
               {permisos.includes("gestionar_usuarios") && (
                 <li
                   className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/sucursales")
-                      ? "bg-[#2c9d8c] text-white"
-                      : "hover:bg-[#2c9d8c33]"
+                    ? "bg-[#2c9d8c] text-white"
+                    : "hover:bg-[#2c9d8c33]"
                     }`}
                   onClick={() => navigate("/sucursales")}
                 >
@@ -255,8 +267,8 @@ const Layout = () => {
                     {permisos.includes("gestionar_ventas") && (
                       <li
                         className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/ventas")
-                            ? "bg-[#2c9d8c] text-white"
-                            : "hover:bg-[#2c9d8c33]"
+                          ? "bg-[#2c9d8c] text-white"
+                          : "hover:bg-[#2c9d8c33]"
                           }`}
                         onClick={() => navigate("/ventas")}
                       >
@@ -266,8 +278,8 @@ const Layout = () => {
                     {permisos.includes("gestionar_proveedores") && (
                       <li
                         className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/proveedores")
-                            ? "bg-[#2c9d8c] text-white"
-                            : "hover:bg-[#2c9d8c33]"
+                          ? "bg-[#2c9d8c] text-white"
+                          : "hover:bg-[#2c9d8c33]"
                           }`}
                         onClick={() => navigate("/proveedores")}
                       >
@@ -277,8 +289,8 @@ const Layout = () => {
                     {permisos.includes("gestionar_ordenes_de_compra") && (
                       <li
                         className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/ordenesCompra")
-                            ? "bg-[#2c9d8c] text-white"
-                            : "hover:bg-[#2c9d8c33]"
+                          ? "bg-[#2c9d8c] text-white"
+                          : "hover:bg-[#2c9d8c33]"
                           }`}
                         onClick={() => navigate("/ordenesCompra")}
                       >
@@ -288,8 +300,8 @@ const Layout = () => {
                     {permisos.includes("gestionar_ofertas") && (
                       <li
                         className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/ofertas")
-                            ? "bg-[#2c9d8c] text-white"
-                            : "hover:bg-[#2c9d8c33]"
+                          ? "bg-[#2c9d8c] text-white"
+                          : "hover:bg-[#2c9d8c33]"
                           }`}
                         onClick={() => navigate("/ofertas")}
                       >
@@ -314,8 +326,8 @@ const Layout = () => {
             <ul className="pl-5 border-l-4 border-[#00ffaa66] space-y-2">
               <li
                 className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/quejas")
-                    ? "bg-[#2c9d8c] text-white"
-                    : "hover:bg-[#2c9d8c33]"
+                  ? "bg-[#2c9d8c] text-white"
+                  : "hover:bg-[#2c9d8c33]"
                   }`}
                 onClick={() => navigate("/quejas")}
               >
@@ -324,7 +336,7 @@ const Layout = () => {
               {permisos.includes("gestionar_modulo") && (
                 <li
                   className={`cursor-pointer px-3 py-2 rounded-md transition-all ${isActive("/modulos")
-                      ? "bg-[#2c9d8c] text-white"
+                    ? "bg-[#2c9d8c] text-white"
                     : "hover:bg-[#2c9d8c33]"
                     }`}
                   onClick={() => navigate("/modulos")}
@@ -338,8 +350,8 @@ const Layout = () => {
           {/* Perfil */}
           <li
             className={`cursor-pointer px-4 py-3 rounded-lg transition-all ${isActive("/perfil")
-                ? "bg-[#2c9d8c] text-white font-semibold"
-                : "hover:bg-[#2c9d8c33]"
+              ? "bg-[#2c9d8c] text-white font-semibold"
+              : "hover:bg-[#2c9d8c33]"
               }`}
             onClick={() => navigate("/perfil")}
           >
