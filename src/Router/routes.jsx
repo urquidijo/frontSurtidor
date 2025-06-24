@@ -24,6 +24,7 @@ import SalidaProductos from "../pages/SalidaProductos/SalidaProductos.jsx";
 import GestionSucursales from "../pages/GestionSucursales/GestionSucursales.jsx";
 import AlertasInventario from "../pages/AlertasInventario/AlertasInventario.jsx";
 import SeguridadSucursal from "../pages/SeguridadSucursal/SeguridadSucursal.jsx";
+import GestionMantenimiento from "../pages/GestionMantenimiento/GestionMantenimiento.jsx";
 
 const Router = () => {
   return (
@@ -61,6 +62,7 @@ const Router = () => {
           <Route path="/sucursales" element={<GestionSucursales />} />
           <Route path="/alertas-inventario" element={<AlertasInventario />} />
           <Route path="/seguridad" element={<SeguridadSucursal />} />
+          <Route path="/mantenimiento" element={<GestionMantenimiento />} />
         </Route>
       </Route>
     </Routes>
