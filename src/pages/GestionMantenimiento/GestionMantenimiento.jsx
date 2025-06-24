@@ -4,6 +4,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { showToast } from "../../utils/toastUtils";
+import { mostrarConfirmacion, mostrarExito, mostrarError } from "../../utils/alertUtils";
 
 const estados = [
   { value: "Reparado", label: "Reparado" },
@@ -29,11 +31,10 @@ const GestionMantenimiento = () => {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [valoresFiltro, setValoresFiltro] = useState({});
   const [tabEstado, setTabEstado] = useState("Todos");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchMantenimientos();
-    fetchDispensadores();
-    fetchTipos();
+    fetchAll();
   }, []);
 
   useEffect(() => {
@@ -42,25 +43,55 @@ const GestionMantenimiento = () => {
     }
   }, [filtros]);
 
+  const fetchAll = async () => {
+    setLoading(true);
+    try {
+      await Promise.all([
+        fetchMantenimientos(),
+        fetchDispensadores(),
+        fetchTipos(),
+      ]);
+    } catch (err) {
+      showToast("error", "Error al cargar datos iniciales");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchMantenimientos = async (filtrosActivos = {}) => {
     let query = new URLSearchParams(filtrosActivos).toString();
-    const res = await fetch(`${API_URL}/mantenimientos/mantenimientos${query ? `?${query}` : ""}`);
-    const data = await res.json();
-    setMantenimientos(data);
+    try {
+      const res = await fetch(`${API_URL}/mantenimientos/mantenimientos${query ? `?${query}` : ""}`);
+      if (!res.ok) throw new Error("Error al obtener mantenimientos");
+      const data = await res.json();
+      setMantenimientos(data);
+    } catch (err) {
+      showToast("error", "Error al cargar mantenimientos");
+    }
   };
 
   const fetchDispensadores = async () => {
-    const sucursalId = sessionStorage.getItem("sucursalId");
-    if (!sucursalId) return setDispensadores([]);
-    const res = await fetch(`${API_URL}/dispensadores/sucursal/${sucursalId}`);
-    const data = await res.json();
-    setDispensadores(data);
+    try {
+      const sucursalId = sessionStorage.getItem("sucursalId");
+      if (!sucursalId) return setDispensadores([]);
+      const res = await fetch(`${API_URL}/dispensadores/sucursal/${sucursalId}`);
+      if (!res.ok) throw new Error("Error al obtener dispensadores");
+      const data = await res.json();
+      setDispensadores(data);
+    } catch (err) {
+      showToast("error", "Error al cargar dispensadores");
+    }
   };
 
   const fetchTipos = async () => {
-    const res = await fetch(`${API_URL}/mantenimientos/tipos`);
-    const data = await res.json();
-    setTipos(data);
+    try {
+      const res = await fetch(`${API_URL}/mantenimientos/tipos`);
+      if (!res.ok) throw new Error("Error al obtener tipos de mantenimiento");
+      const data = await res.json();
+      setTipos(data);
+    } catch (err) {
+      showToast("error", "Error al cargar tipos de mantenimiento");
+    }
   };
 
   const handleOpenModal = (edit = false, mantenimiento = null) => {
@@ -106,7 +137,10 @@ const GestionMantenimiento = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.dispensador_id || !form.tipo_mantenimiento_id || !form.fecha) return;
+    if (!form.dispensador_id || !form.tipo_mantenimiento_id || !form.fecha) {
+      showToast("warning", "Completa todos los campos obligatorios");
+      return;
+    }
     const payload = {
       dispensador_id: form.dispensador_id,
       tipo_mantenimiento_id: form.tipo_mantenimiento_id,
@@ -114,27 +148,45 @@ const GestionMantenimiento = () => {
       estado: form.estado,
       observaciones: form.observaciones,
     };
-    if (isEditing) {
-      await fetch(`${API_URL}/mantenimientos/mantenimientos/${form.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } else {
-      await fetch(`${API_URL}/mantenimientos/mantenimientos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    try {
+      let res;
+      if (isEditing) {
+        res = await fetch(`${API_URL}/mantenimientos/mantenimientos/${form.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch(`${API_URL}/mantenimientos/mantenimientos`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+      if (!res.ok) throw new Error("Error al guardar el mantenimiento");
+      await fetchMantenimientos(filtros);
+      setShowModal(false);
+      mostrarExito(isEditing ? "Mantenimiento actualizado con éxito" : "Mantenimiento creado con éxito");
+    } catch (err) {
+      mostrarError("Ocurrió un error al guardar el mantenimiento");
     }
-    fetchMantenimientos(filtros);
-    setShowModal(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Seguro que deseas eliminar este mantenimiento?")) return;
-    await fetch(`${API_URL}/mantenimientos/mantenimientos/${id}`, { method: "DELETE" });
-    fetchMantenimientos(filtros);
+    const result = await mostrarConfirmacion({
+      titulo: "¿Eliminar mantenimiento?",
+      texto: "Esta acción no se puede deshacer.",
+      confirmText: "Sí, eliminar",
+    });
+    if (!result.isConfirmed) return;
+    try {
+      const res = await fetch(`${API_URL}/mantenimientos/mantenimientos/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Error al eliminar mantenimiento");
+      await fetchMantenimientos(filtros);
+      mostrarExito("Mantenimiento eliminado con éxito");
+    } catch (err) {
+      mostrarError("Ocurrió un error al eliminar el mantenimiento");
+    }
   };
 
   // Exportar PDF
@@ -143,7 +195,7 @@ const GestionMantenimiento = () => {
     doc.text("Reporte de Mantenimientos de Dispensadores", 14, 20);
     const tableColumn = ["Dispensador", "Tipo", "Fecha", "Estado", "Observaciones"];
     const tableRows = [];
-    mantenimientos.forEach((m) => {
+    mantenimientosFiltrados.forEach((m) => {
       tableRows.push([
         m.dispensador,
         m.tipo_mantenimiento,
@@ -163,7 +215,7 @@ const GestionMantenimiento = () => {
   // Exportar Excel
   const exportarExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
-      mantenimientos.map((m) => ({
+      mantenimientosFiltrados.map((m) => ({
         Dispensador: m.dispensador,
         Tipo: m.tipo_mantenimiento,
         Fecha: m.fecha?.slice(0, 10),
@@ -237,41 +289,51 @@ const GestionMantenimiento = () => {
             </tr>
           </thead>
           <tbody>
-            {mantenimientosFiltrados.map((m) => (
-              <tr key={m.id} className="border-b border-[#333] hover:bg-[#222] transition">
-                <td className="px-4 py-2 whitespace-nowrap">{m.dispensador}</td>
-                <td className="px-4 py-2 whitespace-nowrap">{m.tipo_mantenimiento}</td>
-                <td className="px-4 py-2 whitespace-nowrap">{m.fecha?.slice(0, 10)}</td>
-                <td className="px-4 py-2 whitespace-nowrap">
-                  <span className={`inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-bold min-w-[90px] text-center ${
-                    m.estado === "Reparado"
-                      ? "bg-green-700 text-white"
-                      : m.estado === "En revisión"
-                      ? "bg-cyan-600 text-white"
-                      : "bg-red-700 text-white"
-                  }`}>
-                    {m.estado}
-                  </span>
-                </td>
-                <td className="px-4 py-2 whitespace-normal max-w-xs break-words">{m.observaciones}</td>
-                <td className="px-4 py-2 whitespace-nowrap">
-                  <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
-                    <button
-                      className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 text-sm"
-                      onClick={() => handleOpenModal(true, m)}
-                    >
-                      <span role="img" aria-label="editar">✏️</span> Editar
-                    </button>
-                    <button
-                      className="flex items-center gap-1 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 text-sm"
-                      onClick={() => handleDelete(m.id)}
-                    >
-                      <span role="img" aria-label="eliminar">🗑️</span> Eliminar
-                    </button>
-                  </div>
-                </td>
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-[#ccc]">Cargando...</td>
               </tr>
-            ))}
+            ) : mantenimientosFiltrados.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-[#ccc]">No hay mantenimientos registrados.</td>
+              </tr>
+            ) : (
+              mantenimientosFiltrados.map((m) => (
+                <tr key={m.id} className="border-b border-[#333] hover:bg-[#222] transition">
+                  <td className="px-4 py-2 whitespace-nowrap">{m.dispensador}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{m.tipo_mantenimiento}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{m.fecha?.slice(0, 10)}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <span className={`inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-bold min-w-[90px] text-center ${
+                      m.estado === "Reparado"
+                        ? "bg-green-700 text-white"
+                        : m.estado === "En revisión"
+                        ? "bg-cyan-600 text-white"
+                        : "bg-red-700 text-white"
+                    }`}>
+                      {m.estado}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 whitespace-normal max-w-xs break-words">{m.observaciones}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
+                      <button
+                        className="flex items-center gap-1 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 text-sm"
+                        onClick={() => handleOpenModal(true, m)}
+                      >
+                        <span role="img" aria-label="editar">✏️</span> Editar
+                      </button>
+                      <button
+                        className="flex items-center gap-1 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 text-sm"
+                        onClick={() => handleDelete(m.id)}
+                      >
+                        <span role="img" aria-label="eliminar">🗑️</span> Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
