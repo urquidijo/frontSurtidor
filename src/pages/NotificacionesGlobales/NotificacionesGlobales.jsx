@@ -145,8 +145,8 @@ const NotificacionesGlobales = () => {
         if (usuarioId) {
             cargarNotificaciones();
 
-            // Polling cada 60 segundos
-            const interval = setInterval(cargarNotificaciones, 60000);
+            // Polling cada 10 segundos
+            const interval = setInterval(cargarNotificaciones, 1000*10);
             return () => clearInterval(interval);
         }
     }, [usuarioId]);
