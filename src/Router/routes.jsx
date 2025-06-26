@@ -35,7 +35,7 @@ const Router = () => {
       <Route path="/quejas-publicas" element={<FormularioQuejas />} />
       {/* Rutas protegidas */}
 
-     
+      <Route element={<PrivateRoutes />}>
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/usuarios" element={<Usuarios />} />
@@ -64,7 +64,7 @@ const Router = () => {
           <Route path="/seguridad" element={<SeguridadSucursal />} />
           <Route path="/mantenimiento" element={<GestionMantenimiento />} />
         </Route>
-     
+      </Route>
     </Routes>
   );
 };
