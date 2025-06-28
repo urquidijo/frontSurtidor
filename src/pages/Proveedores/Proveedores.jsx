@@ -169,6 +169,9 @@ const Proveedores = () => {
           <thead className="bg-[#1c1c1c]">
             <tr>
               <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
+                Estado
+              </th>
+              <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
                 Nombre
               </th>
               <th className="text-left text-[#00d1b2] font-semibold px-4 py-3 border-b border-[#444]">
@@ -191,6 +194,21 @@ const Proveedores = () => {
           <tbody>
             {proveedores.map((p) => (
               <tr key={p.id} className="hover:bg-[#1f1f1f] transition">
+                <td className="px-4 py-3 border-b border-[#444] capitalize">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold
+                      ${
+                      p.estado === "activo"
+                      ? "bg-green-600 text-white"
+                      : p.estado === "inactivo"
+                      ? "bg-gray-500 text-white"
+                      : "bg-yellow-500 text-black"
+                      }`}
+                  >
+                    {p.estado}
+                  </span>
+                </td>
+
                 <td className="px-4 py-3 border-b border-[#444]">{p.nombre}</td>
                 <td className="px-4 py-3 border-b border-[#444]">
                   {p.telefono}
