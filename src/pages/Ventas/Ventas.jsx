@@ -20,6 +20,7 @@ const Ventas = () => {
     b_sisa: false,
     id_dispensador: "",
     id_sucursal: sessionStorage.getItem("sucursalId") || "",
+    observaciones: "",
   });
 
   const sucursalId = sessionStorage.getItem("sucursalId");
@@ -122,6 +123,7 @@ const Ventas = () => {
         body: JSON.stringify({
           montoPorCobrar: parseFloat(montoPorCobrar),
           montoPagado: parseFloat(montoPorCobrar),
+          observaciones: formulario.observaciones || "",
         }),
       });
 
@@ -188,6 +190,7 @@ const Ventas = () => {
           id_usuario: id_usuario,
           id_dispensador: id_dispensador,
           id_cliente: id_cliente,
+          observaciones: formulario.observaciones || "",
         }),
       });
 
@@ -235,6 +238,7 @@ const Ventas = () => {
       b_sisa: false,
       id_dispensador: "",
       id_sucursal: sessionStorage.getItem("sucursalId") || "",
+      observaciones: "",
     });
     setMontoPagado("");
     setMontoPorCobrar("");
@@ -347,6 +351,16 @@ const Ventas = () => {
               <option value="efectivo">Efectivo</option>
             </select>
           </div>
+        )}
+
+        {!nuevo && (
+          <textarea
+            placeholder="Observaciones (opcional)"
+            value={formulario.observaciones}
+            onChange={e => setFormulario({ ...formulario, observaciones: e.target.value })}
+            className="bg-[#2a2a2a] border border-[#444] text-white p-2 w-full rounded"
+            rows={2}
+          />
         )}
 
         {nuevo ? (

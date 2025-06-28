@@ -74,7 +74,7 @@ const HistorialVentas = () => {
     const doc = new jsPDF();
     doc.text("Reporte de Ventas", 14, 20);
 
-    const tableColumn = ["Código", "Cliente", "Cantidad", "Fecha", "Hora"];
+    const tableColumn = ["Código", "Cliente", "Cantidad", "Fecha", "Hora", "Observaciones"];
     const tableRows = [];
 
     ventas.forEach((venta) => {
@@ -84,6 +84,7 @@ const HistorialVentas = () => {
         venta.cantidad,
         new Date(venta.created_at).toLocaleDateString(),
         venta.hora,
+        venta.observaciones || ""
       ];
       tableRows.push(ventaData);
     });
@@ -106,6 +107,7 @@ const HistorialVentas = () => {
         Cantidad: venta.cantidad,
         Fecha: new Date(venta.created_at).toLocaleDateString(),
         Hora: venta.hora,
+        Observaciones: venta.observaciones || ""
       }))
     );
 
@@ -187,6 +189,7 @@ const HistorialVentas = () => {
                 <th className="py-2 px-4">Cantidad</th>
                 <th className="py-2 px-4">Fecha</th>
                 <th className="py-2 px-4">Hora</th>
+                <th className="py-2 px-4">Observaciones</th>
                 <th className="py-2 px-4">Acciones</th>
               </tr>
             </thead>
@@ -203,6 +206,7 @@ const HistorialVentas = () => {
                     {new Date(venta.created_at).toLocaleDateString()}
                   </td>
                   <td className="py-2 px-4">{venta.hora}</td>
+                  <td className="py-2 px-4">{venta.observaciones || ""}</td>
                   <td className="py-2 px-4">
                     <button
                       onClick={() => deleteVenta(venta.id)}
